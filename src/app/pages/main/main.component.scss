@@ -25,3 +25,35 @@ mat-card {
 .dashboard__schedule-h3 {
   color: #a1a1a1;
 }
+
+.container__title-my-schedule {
+  padding-left: 5px;
+  padding-top: 20px;
+}
+
+table {
+  width: 100%;
+}
+
+th {
+  align-items: center;
+}
+
+.mat-header-cell,
+.mat-cell {
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  margin-right: 15px;
+}
+
+// .container__register-schedule {
+//   display: flex;
+//   justify-content: space-between;
+// }

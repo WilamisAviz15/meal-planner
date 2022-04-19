@@ -1,0 +1,24 @@
+<mat-dialog-content class="mat-typography dialog-dates">
+  <h2>Preencha as informações abaixo</h2>
+  <mat-form-field>
+    <mat-label>Selecione a refeição</mat-label>
+    <mat-select name="food">
+      <mat-option *ngFor="let meal of meals" [value]="meal">
+        {{ meal }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Enter a date range</mat-label>
+    <mat-date-range-input [rangePicker]="picker">
+      <input matStartDate placeholder="Inicio" />
+      <input matEndDate placeholder="Fim" />
+    </mat-date-range-input>
+    <mat-hint>MM/DD/YYYY - MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+  <button mat-raised-button color="primary" class="btn">
+    Cadastrar agendamento semanal
+  </button>
+</mat-dialog-content>
