@@ -11,9 +11,7 @@ export class DialogScheduleComponent implements OnInit {
   openDialog() {
     const dialogRef = this.dialog.open(DialogScheduleComponent);
 
-    dialogRef.afterClosed().subscribe((result: any) => {
-      console.log(`Dialog result: ${result}`);
-    });
+    dialogRef.afterClosed().subscribe();
   }
   constructor(public dialog: MatDialog) {}
 

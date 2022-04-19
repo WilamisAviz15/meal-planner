@@ -1,0 +1,17 @@
+<mat-dialog-content class="mat-typography dialog-dates">
+  <h2>Preencha as informações abaixo</h2>
+  <mat-form-field>
+    <mat-label>Selecione a refeição</mat-label>
+    <mat-select name="food">
+      <mat-option *ngFor="let meal of meals" [value]="meal">
+        {{ meal }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button color="primary" class="btn">
+    Cadastrar agendamento para hoje
+  </button>
+  <button mat-stroked-button color="primary" mat-dialog-close class="btn">
+    Cancelar
+  </button>
+</mat-dialog-content>

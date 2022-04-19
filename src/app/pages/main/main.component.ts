@@ -1,6 +1,8 @@
 import { MatDialog } from '@angular/material/dialog';
-import { DialogScheduleComponent } from './../../auth/login/dialog-schedule/dialog-schedule.component';
+import { DialogScheduleComponent } from './dialog-schedule/dialog-schedule.component';
 import { Component, OnInit } from '@angular/core';
+import { DialogScheduleDailyComponent } from './dialog-schedule/dialog-schedule-daily/dialog-schedule-daily.component';
+import { ConfirmationDialogComponent } from './dialog-schedule/confirmation-dialog/confirmation-dialog.component';
 
 export interface schedule {
   id: number;
@@ -31,10 +33,13 @@ export class MainComponent implements OnInit {
   }
 
   openDialog() {
-    this.dialog.open(DialogScheduleComponent, {
-      data: {
-        animal: 'panda',
-      },
-    });
+    this.dialog.open(DialogScheduleComponent, {});
+  }
+
+  openDialogDaily() {
+    this.dialog.open(DialogScheduleDailyComponent, {});
+  }
+  openConfirmationDialog() {
+    this.dialog.open(ConfirmationDialogComponent, {});
   }
 }

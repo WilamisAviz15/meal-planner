@@ -3,7 +3,7 @@
   <span class="header"></span>
   <button mat-button>MEUS AGENDAMENTOS</button>
   <button mat-button>CONFIGURAÇÕES</button>
-  <button mat-button>SAIR</button>
+  <button mat-button routerLink="/login">SAIR</button>
 </mat-toolbar>
 
 <div class="container">
@@ -16,6 +16,8 @@
       </p>
     </mat-card-content>
   </mat-card>
+  <h1 class="container__title-my-schedule">Mural de Avisos</h1>
+  carrosssel com imagem de avisos e cardapio
   <!-- <mat-card class="dashboard">
     <div class="dashboard__ch-pagas__divider__2">
       <h2 class="dashboard__schedule-h2">Agendamentos realizados</h2>
@@ -62,11 +64,14 @@
   <h1 class="container__title-my-schedule">Realizar agendamento</h1>
   <mat-card>
     <mat-card-content class="container__register-schedule">
-      <button mat-raised-button color="primary" class="btn">
+      <button mat-raised-button color="primary" (click)="openDialogDaily()">
         Realizar agendamento diário
       </button>
       <button mat-stroked-button color="primary" (click)="openDialog()">
         Realizar agendamento semanal
+      </button>
+      <button mat-raised-button color="warn" (click)="openConfirmationDialog()">
+        Cancelar todos os meus agendamentos
       </button>
     </mat-card-content>
   </mat-card>

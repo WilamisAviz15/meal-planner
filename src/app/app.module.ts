@@ -12,11 +12,13 @@ import { MainComponent } from './pages/main/main.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { DialogScheduleComponent } from './auth/login/dialog-schedule/dialog-schedule.component';
+import { DialogScheduleComponent } from './pages/main/dialog-schedule/dialog-schedule.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { DialogScheduleDailyComponent } from './pages/main/dialog-schedule/dialog-schedule-daily/dialog-schedule-daily.component';
+import { ConfirmationDialogComponent } from './pages/main/dialog-schedule/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     LoginComponent,
     MainComponent,
     DialogScheduleComponent,
+    DialogScheduleDailyComponent,
+    ConfirmationDialogComponent,
   ],
   imports: [
     BrowserModule,
