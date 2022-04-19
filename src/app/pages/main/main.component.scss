@@ -1,0 +1,27 @@
+.header {
+  flex: 1 1 auto;
+}
+
+.container {
+  max-width: 900px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 20px 70px 0;
+}
+
+mat-card {
+  margin-bottom: 10px;
+}
+
+.dashboard {
+  text-align: left;
+  border-left: 5px solid #7cffb2;
+  border-radius: 0px;
+}
+
+.dashboard__schedule-h2 {
+  color: #7cffb2;
+}
+.dashboard__schedule-h3 {
+  color: #a1a1a1;
+}
