@@ -1,0 +1,36 @@
+.container__ {
+  display: block;
+  width: 100%;
+  height: 15rem;
+  background-color: #3f51b5;
+}
+
+.container__card__login {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  top: -40px;
+}
+
+mat-card {
+  padding: 10px 50px;
+}
+
+.btn {
+  margin-bottom: 5px;
+}
+
+.container__card__login a {
+  text-decoration: none;
+  text-align: center;
+  color: #000;
+}
+
+.container__card__login a:hover {
+}
+
+.container__login {
+  display: flex;
+  justify-content: center;
+}
