@@ -33,6 +33,7 @@ mat-card {
 
 table {
   width: 100%;
+  overflow-x: auto;
 }
 
 th {
@@ -42,11 +43,6 @@ th {
 .mat-header-cell,
 .mat-cell {
   text-align: center;
-}
-
-.actions {
-  display: flex;
-  justify-content: center;
 }
 
 .btn {
