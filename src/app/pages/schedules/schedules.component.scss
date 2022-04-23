@@ -1,0 +1,33 @@
+.header {
+  flex: 1 1 auto;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.container {
+  max-width: 900px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 20px 70px 0;
+}
+
+table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+th {
+  align-items: center;
+}
+
+.mat-header-cell,
+.mat-cell {
+  text-align: center;
+}
+
+mat-card {
+  margin-bottom: 10px;
+}

@@ -2,24 +2,43 @@
   <h2>Preencha as informações abaixo</h2>
   <mat-form-field>
     <mat-label>Selecione a refeição</mat-label>
-    <mat-select name="food">
+    <mat-select [(ngModel)]="selectedMeal" name="food">
       <mat-option *ngFor="let meal of meals" [value]="meal">
         {{ meal }}
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field>
-    <mat-label>Enter a date range</mat-label>
-    <mat-date-range-input [rangePicker]="picker">
-      <input matStartDate placeholder="Inicio" />
-      <input matEndDate placeholder="Fim" />
+  <mat-form-field *ngIf="!this.data.daily && !this.data.editing">
+    <mat-label>Selecione as datas</mat-label>
+    <mat-date-range-input [rangePicker]="picker" [formGroup]="range">
+      <input matStartDate formControlName="start" placeholder="Inicio" />
+      <input matEndDate formControlName="end" placeholder="Fim" />
     </mat-date-range-input>
-    <mat-hint>MM/DD/YYYY - MM/DD/YYYY</mat-hint>
+    <mat-hint>DD/MM/YYYY - DD/MM/YYYY</mat-hint>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-date-range-picker #picker></mat-date-range-picker>
   </mat-form-field>
-  <button mat-raised-button color="primary" class="btn">
-    Cadastrar agendamento semanal
+  <mat-form-field *ngIf="this.data.editing">
+    <mat-label>Selecione a data</mat-label>
+    <input [(ngModel)]="selectedDates" matInput [matDatepicker]="picker" />
+    <mat-hint>DD/MM/YYYY</mat-hint>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <button
+    mat-raised-button
+    color="primary"
+    class="btn"
+    (click)="this.data.editing ? updateSchedule() : addSchedule()"
+  >
+    {{
+      this.data.editing
+        ? "Editar agendamento"
+        : this.data.daily
+        ? "Cadastrar agendamento para hoje"
+        : "Cadastrar agendamento semanal"
+    }}
   </button>
   <button mat-stroked-button color="primary" mat-dialog-close class="btn">
     Cancelar

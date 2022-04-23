@@ -1,37 +1,27 @@
-import { UtilsService } from './../../shared/services/utils.service';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogScheduleComponent } from './dialog-schedule/dialog-schedule.component';
+import { MainService } from './../main/main.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ConfirmationDialogComponent } from './dialog-schedule/confirmation-dialog/confirmation-dialog.component';
-import { Observable, of, take } from 'rxjs';
-import { MainService } from './main.service';
+import { CONFIRMATION_DIALOG_TYPE, schedule } from '../main/main.component';
 import { MatTable } from '@angular/material/table';
-
-export interface schedule {
-  id: number;
-  mealType: string;
-  date: string;
-}
-
-export enum CONFIRMATION_DIALOG_TYPE {
-  DELETE_SCHEDULE = 'Tem certeza que deseja cancelar o agendamento?',
-  DELETE_ALL_SCHEDULE = 'Tem certeza que deseja cancelar todos os agendamentos realizados?',
-}
+import { UtilsService } from 'src/app/shared/services/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogScheduleComponent } from '../main/dialog-schedule/dialog-schedule.component';
+import { take } from 'rxjs';
+import { ConfirmationDialogComponent } from '../main/dialog-schedule/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
-  selector: 'app-main',
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.scss'],
+  selector: 'app-schedules',
+  templateUrl: './schedules.component.html',
+  styleUrls: ['./schedules.component.scss'],
 })
-export class MainComponent implements OnInit {
+export class SchedulesComponent implements OnInit {
+  displayedColumns: string[] = ['id', 'mealType', 'date', 'actions'];
   mySchedule: schedule[] = [];
   @ViewChild(MatTable) table!: MatTable<schedule>;
-
   title = CONFIRMATION_DIALOG_TYPE;
-  displayedColumns: string[] = ['id', 'mealType', 'date', 'actions'];
+
   constructor(
-    public dialog: MatDialog,
     private mainService: MainService,
+    public dialog: MatDialog,
     private utilsService: UtilsService
   ) {}
 
@@ -39,20 +29,6 @@ export class MainComponent implements OnInit {
     this.mainService.getMeals().subscribe((s: schedule) => {
       this.mySchedule.push(s);
     });
-  }
-
-  removeScheduling(index?: number): void {
-    if (index != undefined) {
-      let oldIdx = index;
-      this.mySchedule.splice(index, 1);
-      this.utilsService.decIdTableScheduling();
-      this.mySchedule = this.utilsService.updateIndex(this.mySchedule, oldIdx);
-      this.table.renderRows();
-    } else {
-      this.mySchedule = [];
-      this.utilsService.resetIdTableScheduling();
-      this.table.renderRows();
-    }
   }
 
   openDialog(daily?: boolean, editing?: boolean, currentMeal?: schedule) {
@@ -94,5 +70,19 @@ export class MainComponent implements OnInit {
         if (response) this.removeScheduling(idx);
         console.log(idx);
       });
+  }
+
+  removeScheduling(index?: number): void {
+    if (index != undefined) {
+      let oldIdx = index;
+      this.mySchedule.splice(index, 1);
+      this.utilsService.decIdTableScheduling();
+      this.mySchedule = this.utilsService.updateIndex(this.mySchedule, oldIdx);
+      this.table.renderRows();
+    } else {
+      this.mySchedule = [];
+      this.utilsService.resetIdTableScheduling();
+      this.table.renderRows();
+    }
   }
 }

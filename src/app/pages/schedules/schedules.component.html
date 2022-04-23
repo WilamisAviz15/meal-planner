@@ -5,26 +5,16 @@
   <button mat-button>CONFIGURAÇÕES</button>
   <button mat-button routerLink="/login">SAIR</button>
 </mat-toolbar>
-
 <div class="container">
   <mat-card>
-    <mat-card-title>Bem vindo, Wilamis Micael de Araujo Aviz</mat-card-title>
+    <mat-card-title>Agendamentos Realizados</mat-card-title>
     <mat-card-content>
       <p>
-        Nesta área você poderá agendar refeições no campus e consultar suas
-        marcações feitas!
+        Nesta área você poderá consultar todos os agendamentos feitos no
+        sistema.
       </p>
     </mat-card-content>
   </mat-card>
-  <h1 class="container__title-my-schedule">Mural de Avisos</h1>
-  carrosssel com imagem de avisos e cardapio
-  <!-- <mat-card class="dashboard">
-    <div class="dashboard__ch-pagas__divider__2">
-      <h2 class="dashboard__schedule-h2">Agendamentos realizados</h2>
-      <h3 class="dashboard__schedule-h3">5</h3>
-    </div>
-  </mat-card> -->
-  <h1 class="container__title-my-schedule">Meus agendamentos da semana</h1>
   <table mat-table [dataSource]="mySchedule" class="mat-elevation-z3">
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>#</th>
@@ -62,19 +52,4 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
-
-  <h1 class="container__title-my-schedule">Realizar agendamento</h1>
-  <mat-card>
-    <mat-card-content class="container__register-schedule">
-      <button mat-raised-button color="primary" (click)="openDialog(true)">
-        Realizar agendamento diário
-      </button>
-      <button mat-stroked-button color="primary" (click)="openDialog(false)">
-        Realizar agendamento semanal
-      </button>
-      <button mat-raised-button color="warn" (click)="openConfirmationDialog()">
-        Cancelar todos os meus agendamentos
-      </button>
-    </mat-card-content>
-  </mat-card>
 </div>

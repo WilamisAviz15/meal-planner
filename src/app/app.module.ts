@@ -16,9 +16,10 @@ import { DialogScheduleComponent } from './pages/main/dialog-schedule/dialog-sch
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { DialogScheduleDailyComponent } from './pages/main/dialog-schedule/dialog-schedule-daily/dialog-schedule-daily.component';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ConfirmationDialogComponent } from './pages/main/dialog-schedule/confirmation-dialog/confirmation-dialog.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SchedulesComponent } from './pages/schedules/schedules.component';
 
 @NgModule({
   declarations: [
@@ -26,8 +27,8 @@ import { ConfirmationDialogComponent } from './pages/main/dialog-schedule/confir
     LoginComponent,
     MainComponent,
     DialogScheduleComponent,
-    DialogScheduleDailyComponent,
     ConfirmationDialogComponent,
+    SchedulesComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,8 +44,11 @@ import { ConfirmationDialogComponent } from './pages/main/dialog-schedule/confir
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }],
+
   bootstrap: [AppComponent],
 })
 export class AppModule {}
