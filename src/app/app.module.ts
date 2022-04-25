@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './auth/login/login.component';
+import { LoginComponent } from './account/login/login.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +20,8 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ConfirmationDialogComponent } from './pages/main/dialog-schedule/confirmation-dialog/confirmation-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SchedulesComponent } from './pages/schedules/schedules.component';
+import { AutenticationComponent } from './account/autentication/autentication.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { SchedulesComponent } from './pages/schedules/schedules.component';
     DialogScheduleComponent,
     ConfirmationDialogComponent,
     SchedulesComponent,
+    AutenticationComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,6 +49,7 @@ import { SchedulesComponent } from './pages/schedules/schedules.component';
     MatNativeDateModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }],
 

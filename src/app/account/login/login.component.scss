@@ -10,11 +10,11 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  top: -40px;
 }
 
 mat-card {
   padding: 90px 90px;
+  top: -40px;
 }
 
 .btn {
@@ -23,6 +23,7 @@ mat-card {
 
 .register {
   color: #3f51b5;
+  width: 100%;
 }
 
 // .container__login__card a {

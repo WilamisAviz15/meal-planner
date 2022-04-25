@@ -6,6 +6,8 @@ import { ConfirmationDialogComponent } from './dialog-schedule/confirmation-dial
 import { Observable, of, take } from 'rxjs';
 import { MainService } from './main.service';
 import { MatTable } from '@angular/material/table';
+import { AccountService } from 'src/app/shared/account/account.service';
+import { ActivatedRoute, Params } from '@angular/router';
 
 export interface schedule {
   id: number;
@@ -32,13 +34,17 @@ export class MainComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private mainService: MainService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    public accountService: AccountService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.mainService.getMeals().subscribe((s: schedule) => {
       this.mySchedule.push(s);
     });
+
+    console.log(this.accountService.getToken());
   }
 
   removeScheduling(index?: number): void {

@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="container__color"></div>
+  <div class="container__login">
+    <mat-card>
+      <form (ngSubmit)="onSubmit()" class="container__login__card">
+        <img src="./assets/img.jpg" alt="" />
+        <mat-form-field>
+          <mat-label>Usuário</mat-label>
+          <input matInput [(ngModel)]="user.mail" name="mail" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Senha</mat-label>
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="user.password"
+            name="password"
+          />
+        </mat-form-field>
+        <button mat-raised-button color="primary" class="btn">Entrar</button>
+      </form>
+      <button mat-stroked-button class="btn register">Cadastrar</button>
+    </mat-card>
+  </div>
+</div>
