@@ -1,4 +1,5 @@
 import UserModel from '../models/user';
+import bcrypt from 'bcryptjs';
 import { User } from '../models/user';
 import { cloneDeep } from 'lodash';
 import { Mutex } from 'async-mutex';
@@ -19,8 +20,15 @@ router.get('/allUsers', async (req, res) => {
   return res.status(200).json(Array.from(Object.values(usersMap)));
 });
 
-router.post('/createUser', (req, res) => {
-  const user = new UserModel(req.body.user);
+router.post('/createUser', async (req, res) => {
+  const selectedUser = await UserModel.findOne({ mail: req.body.user.mail });
+  if (selectedUser) return res.status(400).send('Email already exists');
+  const user = new UserModel({
+    name: req.body.user.name,
+    mail: req.body.user.mail,
+    password: bcrypt.hashSync(req.body.user.password),
+    isAdmin: req.body.user.isAdmin,
+  });
   mutex.acquire().then((release) => {
     user
       .save()

@@ -12,6 +12,9 @@ export class User extends Base<string> {
 
   @prop({ required: true })
   password: string = '';
+
+  @prop({})
+  isAdmin: boolean = false;
 }
 
 export default getModelForClass(User);
