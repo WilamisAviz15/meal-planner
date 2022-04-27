@@ -2,9 +2,9 @@ import ScheduleModel from '../models/schedule';
 import { Schedule } from '../models/schedule';
 import { cloneDeep } from 'lodash';
 import { Mutex } from 'async-mutex';
-import { Router } from 'express';
+import * as express from 'express';
 
-const router = Router();
+const router = express.Router();
 let requested = false;
 
 const mutex = new Mutex();
