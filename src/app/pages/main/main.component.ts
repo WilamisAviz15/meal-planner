@@ -1,3 +1,4 @@
+import { User } from 'backend/src/app/models/user';
 import { UtilsService } from './../../shared/services/utils.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogScheduleComponent } from './dialog-schedule/dialog-schedule.component';
@@ -26,6 +27,7 @@ export enum CONFIRMATION_DIALOG_TYPE {
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
+  user: string = '';
   mySchedule: schedule[] = [];
   @ViewChild(MatTable) table!: MatTable<schedule>;
 
@@ -35,16 +37,20 @@ export class MainComponent implements OnInit {
     public dialog: MatDialog,
     private mainService: MainService,
     private utilsService: UtilsService,
-    public accountService: AccountService,
-    private route: ActivatedRoute
+    public accountService: AccountService
   ) {}
 
   ngOnInit(): void {
     this.mainService.getMeals().subscribe((s: schedule) => {
       this.mySchedule.push(s);
     });
-
-    console.log(this.accountService.getToken());
+    const token = this.accountService.getToken();
+    console.log('token:', token);
+    const currentUser = window.localStorage.getItem('idUser');
+    if (currentUser) {
+      this.user = currentUser;
+    }
+    console.log(this.accountService.idToUser(this.user));
   }
 
   removeScheduling(index?: number): void {

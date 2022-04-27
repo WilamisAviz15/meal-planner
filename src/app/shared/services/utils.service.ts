@@ -1,5 +1,10 @@
 import { schedule } from './../../pages/main/main.component';
 import { Injectable } from '@angular/core';
+import { at } from 'lodash';
+
+type NonOptionalKeys<T> = {
+  [K in keyof T]-?: T extends { [K1 in K]: any } ? K : never;
+}[keyof T];
 
 @Injectable({
   providedIn: 'root',
@@ -48,5 +53,10 @@ export class UtilsService {
 
   resetIdTableScheduling(): void {
     this.idTableScheduling = 0;
+  }
+
+  isOfType<T>(obj: any, properties: NonOptionalKeys<T>[]): obj is T {
+    const values = at(obj, properties);
+    return !values.includes(undefined);
   }
 }

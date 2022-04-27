@@ -1,7 +1,9 @@
-import { getModelForClass, prop, Ref } from '@typegoose/typegoose';
+import { getModelForClass, plugin, prop, Ref } from '@typegoose/typegoose';
+import mongooseUniqueValidator from 'mongoose-unique-validator';
 import { Base } from './base';
 import { User } from './user';
 
+@plugin(mongooseUniqueValidator)
 export class Schedule extends Base<string> {
   @prop({ required: true, ref: () => User })
   user: Ref<User>;
