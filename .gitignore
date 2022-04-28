@@ -6,6 +6,10 @@
 /tmp
 /out-tsc
 /bazel-out
+/backend/app
+/backend/app.js
+/backend/app.js.map
+
 
 # Node
 /node_modules

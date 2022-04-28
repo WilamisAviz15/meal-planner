@@ -13,7 +13,11 @@ const routes: Routes = [
     children: [],
     canActivate: [AuthGuard],
   },
-  { path: 'schedules', component: SchedulesComponent },
+  {
+    path: 'schedules',
+    component: SchedulesComponent,
+    canActivate: [AuthGuard],
+  },
 
   {
     path: '',

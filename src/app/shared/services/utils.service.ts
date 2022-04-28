@@ -1,6 +1,7 @@
 import { schedule } from './../../pages/main/main.component';
 import { Injectable } from '@angular/core';
 import { at } from 'lodash';
+import * as moment from 'moment';
 
 type NonOptionalKeys<T> = {
   [K in keyof T]-?: T extends { [K1 in K]: any } ? K : never;
@@ -14,13 +15,7 @@ export class UtilsService {
   idTableScheduling: number = 0;
 
   formatDate(date: Date): string {
-    return (
-      String(date.getDate()).padStart(2, '0') +
-      '/' +
-      String(date.getMonth() + 1).padStart(2, '0') +
-      '/' +
-      String(date.getFullYear())
-    );
+    return moment(date).format('DD/MM/YYYY');
   }
 
   incIdTableScheduling(): number {

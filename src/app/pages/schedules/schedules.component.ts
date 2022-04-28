@@ -26,9 +26,9 @@ export class SchedulesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.mainService.getMeals().subscribe((s: schedule) => {
-      this.mySchedule.push(s);
-    });
+    // this.mainService.getMeals().subscribe((s: schedule) => {
+    //   this.mySchedule.push(s);
+    // });
   }
 
   openDialog(daily?: boolean, editing?: boolean, currentMeal?: schedule) {
