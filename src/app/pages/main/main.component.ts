@@ -1,10 +1,11 @@
+import { Schedule } from './../../../../backend/src/app/models/schedule';
 import { User } from 'backend/src/app/models/user';
 import { UtilsService } from './../../shared/services/utils.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogScheduleComponent } from './dialog-schedule/dialog-schedule.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationDialogComponent } from './dialog-schedule/confirmation-dialog/confirmation-dialog.component';
-import { Observable, of, take } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, take } from 'rxjs';
 import { MainService } from './main.service';
 import { MatTable } from '@angular/material/table';
 import { AccountService } from 'src/app/shared/account/account.service';
@@ -27,32 +28,36 @@ export enum CONFIRMATION_DIALOG_TYPE {
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
-  user: string = '';
+  user: User = new User();
   mySchedule: schedule[] = [];
+  schedules$ = new BehaviorSubject<Schedule[]>([]);
   @ViewChild(MatTable) table!: MatTable<schedule>;
+  i = 0;
 
   title = CONFIRMATION_DIALOG_TYPE;
   displayedColumns: string[] = ['id', 'mealType', 'date', 'actions'];
   constructor(
     public dialog: MatDialog,
     private mainService: MainService,
-    private utilsService: UtilsService,
+    public utilsService: UtilsService,
     public accountService: AccountService
   ) {}
 
   ngOnInit(): void {
-    this.mainService.getMeals().subscribe((s: schedule) => {
-      this.mySchedule.push(s);
-    });
     const token = this.accountService.getToken();
     console.log('token:', token);
     const currentUser = window.localStorage.getItem('idUser');
-    if (currentUser) {
-      this.user = currentUser;
-    }
-    // console.log(this.accountService.idToUser(this.user));
-    // console.log(this.accountService.getUser());
-    this.accountService.getUser();
+    this.accountService.getUser().subscribe((u) => {
+      this.user = u[0];
+      console.log(this.user);
+    });
+    this.mainService
+      .getAllSchedules()
+      .pipe(take(2))
+      .subscribe((s) => {
+        this.schedules$.next(s);
+        console.log(this.schedules$.getValue());
+      });
   }
 
   removeScheduling(index?: number): void {
@@ -72,7 +77,12 @@ export class MainComponent implements OnInit {
   openDialog(daily?: boolean, editing?: boolean, currentMeal?: schedule) {
     this.dialog
       .open(DialogScheduleComponent, {
-        data: { daily: daily, editing: editing, currentMeal: currentMeal },
+        data: {
+          daily: daily,
+          editing: editing,
+          currentMeal: currentMeal,
+          userId: this.user,
+        },
       })
       .afterClosed()
       .pipe(take(1))

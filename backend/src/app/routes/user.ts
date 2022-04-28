@@ -6,18 +6,11 @@ import { Mutex } from 'async-mutex';
 import * as express from 'express';
 
 const router = express.Router();
-let requested = false;
-
 const mutex = new Mutex();
-const usersMap: Record<string, User> = {};
 
 router.get('/allUsers', async (req, res) => {
-  if (!requested) {
-    const users: User[] = await UserModel.find({});
-    users.map((user) => (usersMap[user._id] = cloneDeep(user)));
-    requested = true;
-  }
-  return res.status(200).json(Array.from(Object.values(usersMap)));
+  const users: User[] = await UserModel.find({});
+  return res.status(200).json(Array.from(Object.values(users)));
 });
 
 router.post('/createUser', async (req, res) => {
@@ -33,7 +26,6 @@ router.post('/createUser', async (req, res) => {
     user
       .save()
       .then((savedUser: any) => {
-        if (requested) usersMap[savedUser._id] = cloneDeep(savedUser.toJSON());
         release();
         return res.status(201).json({
           message: 'Usuário cadastrado com sucesso!',

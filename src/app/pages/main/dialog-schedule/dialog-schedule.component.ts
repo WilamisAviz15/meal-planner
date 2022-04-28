@@ -1,3 +1,5 @@
+import { DialogScheduleService } from './dialog-schedule.service';
+import { Schedule } from './../../../../../backend/src/app/models/schedule';
 import { UtilsService } from './../../../shared/services/utils.service';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -17,6 +19,7 @@ moment.locale('pt-br');
 })
 export class DialogScheduleComponent implements OnInit {
   meals = ['Almoço', 'Janta'];
+  schedule: Schedule = new Schedule();
   selectedMeal: string = '';
   selectedDates!: Date;
   dateNow: Date = new Date();
@@ -29,30 +32,26 @@ export class DialogScheduleComponent implements OnInit {
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<DialogScheduleComponent>,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private dialogScheduleService: DialogScheduleService
   ) {}
 
   ngOnInit(): void {
     if (this.data.editing) {
       // console.log(this.data.currentMeal);
       this.selectedMeal = this.data.currentMeal.mealType;
-      this.selectedDates = moment(
-        this.data.currentMeal.date,
-        'D/M/YYYY'
-      ).toDate();
+      this.selectedDates = this.data.currentMeal.mealDate;
     }
   }
 
   addSchedule(): void {
     let obj: schedule[] = [];
+
     if (this.data.daily) {
-      const dateToday = this.utilsService.formatDate(this.dateNow);
-      console.log(this.selectedMeal, dateToday);
-      obj.push({
-        id: this.utilsService.incIdTableScheduling(),
-        mealType: this.selectedMeal,
-        date: dateToday,
-      });
+      this.schedule.mealType = this.selectedMeal;
+      this.schedule.mealDate = this.dateNow;
+      this.schedule.user = this.data.userId;
+      this.dialogScheduleService.addSchedule(this.schedule);
     } else {
       let dateStart: Date = this.range.value.start;
       let dateEnd: Date = this.range.value.end;
@@ -74,7 +73,6 @@ export class DialogScheduleComponent implements OnInit {
 
   updateSchedule(): void {
     this.dialogRef.close({
-      id: +this.data.currentMeal.id,
       mealType: this.selectedMeal,
       date: this.utilsService.formatDate(this.selectedDates),
     });

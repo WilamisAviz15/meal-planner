@@ -31,7 +31,7 @@ class MealPlannerAPI {
     this.app.use(express.urlencoded({ extended: false, limit: '50mb' }));
     this.app.use('/api/users', usersRoutes);
     this.app.use('/api/login', loginRoutes);
-    this.app.use('/api/schedules', auth, scheduleRoutes);
+    this.app.use('/api/schedules', scheduleRoutes);
   }
 }
 

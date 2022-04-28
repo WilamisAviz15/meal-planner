@@ -1,28 +1,25 @@
+import { HttpClient } from '@angular/common/http';
+import { Schedule } from './../../../../backend/src/app/models/schedule';
 import { UtilsService } from './../../shared/services/utils.service';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, take } from 'rxjs';
 import { schedule } from './main.component';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MainService {
-  constructor(private utilsService: UtilsService) {}
+  schedules$ = new BehaviorSubject<Schedule[]>([]);
+  constructor(private utilsService: UtilsService, private http: HttpClient) {}
 
-  getMeals(): Observable<schedule> {
-    const simpleObservable = new Observable<schedule>((observer) => {
-      observer.next({
-        id: this.utilsService.incIdTableScheduling(),
-        mealType: 'Almoço',
-        date: '10/04/2022',
+  getAllSchedules(): BehaviorSubject<Schedule[]> {
+    this.http
+      .get(`${environment.api}/api/schedules/all`)
+      .pipe(take(1))
+      .subscribe((schedules) => {
+        this.schedules$.next(schedules as Schedule[]);
       });
-      observer.next({
-        id: this.utilsService.incIdTableScheduling(),
-        mealType: 'Almoço',
-        date: '11/04/2022',
-      });
-      observer.complete();
-    });
-    return simpleObservable;
+    return this.schedules$;
   }
 }

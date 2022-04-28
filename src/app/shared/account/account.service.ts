@@ -2,8 +2,9 @@ import { UtilsService } from 'src/app/shared/services/utils.service';
 import { environment } from './../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, take } from 'rxjs';
+import { BehaviorSubject, map, Observable, take } from 'rxjs';
 import { User } from 'backend/src/app/models/user';
+import { cloneDeep } from 'lodash';
 export interface Iuser {
   mail: string;
   password: string;
@@ -13,7 +14,7 @@ export interface Iuser {
   providedIn: 'root',
 })
 export class AccountService {
-  users$ = new BehaviorSubject<User[]>([]);
+  private users$ = new BehaviorSubject<User[]>([]);
   constructor(private http: HttpClient, private utils: UtilsService) {}
 
   login(user: Iuser) {
@@ -23,9 +24,9 @@ export class AccountService {
     this.http
       .post<any>(`${environment.api}/api/login/`, req)
       .pipe(take(1))
-      .subscribe((usr) => {
-        if (usr) {
-          window.localStorage.setItem('authorization-token', usr);
+      .subscribe((key) => {
+        if (key) {
+          window.localStorage.setItem('authorization-token', key);
           this.getUserByToken();
         }
       });
@@ -55,15 +56,31 @@ export class AccountService {
     window.localStorage.clear();
   }
 
-  getUser(): void {
-    this.http
-      .get(`${environment.api}/api/users/allUsers`)
-      .pipe(take(1))
-      .subscribe((users) => {
-        this.users$.next(users as User[]);
-      });
-    console.log(this.users$.getValue());
-    // return this.users$;
+  // getAllUsers(): BehaviorSubject<User[]> {
+  //   this.http
+  //     .get(`${environment.api}/api/users/allUsers`)
+  //     .pipe(take(1))
+  //     .subscribe((users: any) => {
+  //       this.users$.next(users as User[]);
+  //     });
+  //   return this.users$;
+  // }
+
+  getAllUsers(): Observable<User[]> {
+    return this.http
+      .get<User[]>(`${environment.api}/api/users/allUsers`)
+      .pipe(map((users) => users));
+  }
+
+  getUser(): Observable<User[]> {
+    const usrTransform: User = new User();
+    return this.http
+      .get<User[]>(`${environment.api}/api/users/allUsers`)
+      .pipe(
+        map((users) =>
+          users.filter((user) => user.mail == 'wilamis.micael@gmail.com')
+        )
+      );
   }
 
   createAccount(account: any) {}
