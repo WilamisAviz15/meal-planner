@@ -50,7 +50,7 @@ router.post('/updateSchedule', (req, res) => {
   );
 });
 
-router.post('/deleteSchedule', (req, res) => {
+router.post('/one', (req, res) => {
   ScheduleModel.findByIdAndDelete(
     req.body.schedule._id,
     req.body.schedule,
@@ -67,7 +67,7 @@ router.post('/deleteSchedule', (req, res) => {
   );
 });
 
-router.post('/deleteAllSchedule', (req, res) => {
+router.delete('/all', (req, res) => {
   ScheduleModel.deleteMany((err) => {
     if (err)
       return res.status(500).json({

@@ -1,15 +1,14 @@
+import { DialogScheduleService } from './dialog-schedule/dialog-schedule.service';
 import { Schedule } from './../../../../backend/src/app/models/schedule';
 import { User } from 'backend/src/app/models/user';
 import { UtilsService } from './../../shared/services/utils.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogScheduleComponent } from './dialog-schedule/dialog-schedule.component';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationDialogComponent } from './dialog-schedule/confirmation-dialog/confirmation-dialog.component';
-import { BehaviorSubject, map, Observable, of, take } from 'rxjs';
-import { MainService } from './main.service';
-import { MatTable } from '@angular/material/table';
+import { Subject, take, takeUntil } from 'rxjs';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { AccountService } from 'src/app/shared/account/account.service';
-import { ActivatedRoute, Params } from '@angular/router';
 
 export interface schedule {
   id: number;
@@ -27,21 +26,32 @@ export enum CONFIRMATION_DIALOG_TYPE {
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
   user: User = new User();
-  mySchedule: schedule[] = [];
-  schedules$ = new BehaviorSubject<Schedule[]>([]);
-  @ViewChild(MatTable) table!: MatTable<schedule>;
-  i = 0;
+  @ViewChild('table') table!: MatTable<schedule>;
+  meals = new MatTableDataSource<Schedule>();
+  private destroy$ = new Subject<void>();
 
   title = CONFIRMATION_DIALOG_TYPE;
-  displayedColumns: string[] = ['id', 'mealType', 'date', 'actions'];
+  displayedColumns: string[] = [
+    'id',
+    'mealType',
+    'date',
+    'used',
+    'paid',
+    'actions',
+  ];
   constructor(
     public dialog: MatDialog,
-    private mainService: MainService,
     public utilsService: UtilsService,
-    public accountService: AccountService
+    public accountService: AccountService,
+    public dialogScheduleService: DialogScheduleService
   ) {}
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   ngOnInit(): void {
     const token = this.accountService.getToken();
@@ -51,30 +61,27 @@ export class MainComponent implements OnInit {
       this.user = u[0];
       console.log(this.user);
     });
-    this.mainService
+
+    this.dialogScheduleService
       .getAllSchedules()
-      .pipe(take(2))
-      .subscribe((s) => {
-        this.schedules$.next(s);
-        console.log(this.schedules$.getValue());
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((meal) => {
+        this.meals = new MatTableDataSource(meal);
       });
   }
 
   removeScheduling(index?: number): void {
     if (index != undefined) {
-      let oldIdx = index;
-      this.mySchedule.splice(index, 1);
-      this.utilsService.decIdTableScheduling();
-      this.mySchedule = this.utilsService.updateIndex(this.mySchedule, oldIdx);
+      this.dialogScheduleService.deleteSchedule(this.meals.data[index]);
+      this.meals.data.splice(index, 1);
       this.table.renderRows();
     } else {
-      this.mySchedule = [];
-      this.utilsService.resetIdTableScheduling();
-      this.table.renderRows();
+      this.meals.data = [];
+      this.dialogScheduleService.deleteAllSchedules();
     }
   }
 
-  openDialog(daily?: boolean, editing?: boolean, currentMeal?: schedule) {
+  openDialog(daily?: boolean, editing?: boolean, currentMeal?: Schedule) {
     this.dialog
       .open(DialogScheduleComponent, {
         data: {
@@ -88,26 +95,21 @@ export class MainComponent implements OnInit {
       .pipe(take(1))
       .subscribe((response) => {
         if (response) {
-          if (editing && currentMeal?.id) {
-            this.mySchedule[currentMeal.id] = {
-              id: currentMeal.id,
-              mealType: response.mealType,
-              date: response.date,
-            };
-            this.table.renderRows();
-            console.log(this.mySchedule);
-          } else {
-            this.mySchedule.push(...response);
-            this.table.renderRows();
+          if (editing && currentMeal) {
+            currentMeal.mealDate = response.mealDate;
+            currentMeal.mealType = response.mealType;
+            this.dialogScheduleService.updateSchedule(currentMeal);
           }
         }
       });
   }
 
   openConfirmationDialog(idx?: number) {
-    const title = idx
-      ? this.title.DELETE_SCHEDULE
-      : this.title.DELETE_ALL_SCHEDULE;
+    idx = idx != undefined ? idx : undefined;
+    const title =
+      idx != undefined
+        ? this.title.DELETE_SCHEDULE
+        : this.title.DELETE_ALL_SCHEDULE;
     this.dialog
       .open(ConfirmationDialogComponent, {
         data: { title: title, id: idx },

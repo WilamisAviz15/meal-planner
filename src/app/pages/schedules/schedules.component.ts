@@ -1,12 +1,15 @@
-import { MainService } from './../main/main.service';
+import { AccountService } from './../../shared/account/account.service';
+import { User } from './../../../../backend/src/app/models/user';
+import { DialogScheduleService } from './../main/dialog-schedule/dialog-schedule.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CONFIRMATION_DIALOG_TYPE, schedule } from '../main/main.component';
-import { MatTable } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { UtilsService } from 'src/app/shared/services/utils.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogScheduleComponent } from '../main/dialog-schedule/dialog-schedule.component';
-import { take } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import { ConfirmationDialogComponent } from '../main/dialog-schedule/confirmation-dialog/confirmation-dialog.component';
+import { Schedule } from 'backend/src/app/models/schedule';
 
 @Component({
   selector: 'app-schedules',
@@ -14,52 +17,87 @@ import { ConfirmationDialogComponent } from '../main/dialog-schedule/confirmatio
   styleUrls: ['./schedules.component.scss'],
 })
 export class SchedulesComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'mealType', 'date', 'actions'];
+  displayedColumns: string[] = [
+    'id',
+    'mealType',
+    'date',
+    'used',
+    'paid',
+    'actions',
+  ];
   mySchedule: schedule[] = [];
   @ViewChild(MatTable) table!: MatTable<schedule>;
   title = CONFIRMATION_DIALOG_TYPE;
+  meals = new MatTableDataSource<Schedule>();
+  user: User = new User();
+  private destroy$ = new Subject<void>();
 
   constructor(
-    private mainService: MainService,
+    private accountService: AccountService,
     public dialog: MatDialog,
-    private utilsService: UtilsService
+    public utilsService: UtilsService,
+    public dialogScheduleService: DialogScheduleService
   ) {}
 
-  ngOnInit(): void {
-    // this.mainService.getMeals().subscribe((s: schedule) => {
-    //   this.mySchedule.push(s);
-    // });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  openDialog(daily?: boolean, editing?: boolean, currentMeal?: schedule) {
+  ngOnInit(): void {
+    this.accountService.getUser().subscribe((u) => {
+      this.user = u[0];
+      console.log(this.user);
+    });
+
+    this.dialogScheduleService
+      .getAllSchedules()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((meal) => {
+        this.meals = new MatTableDataSource(meal);
+      });
+  }
+
+  removeScheduling(index?: number): void {
+    if (index != undefined) {
+      this.dialogScheduleService.deleteSchedule(this.meals.data[index]);
+      this.meals.data.splice(index, 1);
+      this.table.renderRows();
+    } else {
+      this.meals.data = [];
+      this.dialogScheduleService.deleteAllSchedules();
+    }
+  }
+
+  openDialog(daily?: boolean, editing?: boolean, currentMeal?: Schedule) {
     this.dialog
       .open(DialogScheduleComponent, {
-        data: { daily: daily, editing: editing, currentMeal: currentMeal },
+        data: {
+          daily: daily,
+          editing: editing,
+          currentMeal: currentMeal,
+          userId: this.user,
+        },
       })
       .afterClosed()
       .pipe(take(1))
       .subscribe((response) => {
         if (response) {
-          if (editing && currentMeal?.id) {
-            this.mySchedule[currentMeal.id] = {
-              id: currentMeal.id,
-              mealType: response.mealType,
-              date: response.date,
-            };
-            this.table.renderRows();
-            console.log(this.mySchedule);
-          } else {
-            this.mySchedule.push(...response);
-            this.table.renderRows();
+          if (editing && currentMeal) {
+            currentMeal.mealDate = response.mealDate;
+            currentMeal.mealType = response.mealType;
+            this.dialogScheduleService.updateSchedule(currentMeal);
           }
         }
       });
   }
 
   openConfirmationDialog(idx?: number) {
-    const title = idx
-      ? this.title.DELETE_SCHEDULE
-      : this.title.DELETE_ALL_SCHEDULE;
+    idx = idx != undefined ? idx : undefined;
+    const title =
+      idx != undefined
+        ? this.title.DELETE_SCHEDULE
+        : this.title.DELETE_ALL_SCHEDULE;
     this.dialog
       .open(ConfirmationDialogComponent, {
         data: { title: title, id: idx },
@@ -70,19 +108,5 @@ export class SchedulesComponent implements OnInit {
         if (response) this.removeScheduling(idx);
         console.log(idx);
       });
-  }
-
-  removeScheduling(index?: number): void {
-    if (index != undefined) {
-      let oldIdx = index;
-      this.mySchedule.splice(index, 1);
-      this.utilsService.decIdTableScheduling();
-      this.mySchedule = this.utilsService.updateIndex(this.mySchedule, oldIdx);
-      this.table.renderRows();
-    } else {
-      this.mySchedule = [];
-      this.utilsService.resetIdTableScheduling();
-      this.table.renderRows();
-    }
   }
 }

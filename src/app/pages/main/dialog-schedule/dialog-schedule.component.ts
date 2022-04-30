@@ -45,36 +45,27 @@ export class DialogScheduleComponent implements OnInit {
   }
 
   addSchedule(): void {
-    let obj: schedule[] = [];
-
+    this.schedule.mealType = this.selectedMeal;
+    this.schedule.user = this.data.userId;
     if (this.data.daily) {
-      this.schedule.mealType = this.selectedMeal;
       this.schedule.mealDate = this.dateNow;
-      this.schedule.user = this.data.userId;
       this.dialogScheduleService.addSchedule(this.schedule);
     } else {
       let dateStart: Date = this.range.value.start;
       let dateEnd: Date = this.range.value.end;
       while (!moment(dateStart).isAfter(dateEnd)) {
-        const date = this.utilsService.formatDate(dateStart);
-        obj.push({
-          id: this.utilsService.incIdTableScheduling(),
-          mealType: this.selectedMeal,
-          date: date,
-        });
-
+        this.schedule.mealDate = dateStart;
+        this.dialogScheduleService.addSchedule(this.schedule);
         dateStart = moment(dateStart, 'D/M/YYYY').add(1, 'days').toDate();
       }
     }
-    console.log(obj);
-
-    this.dialogRef.close(obj);
+    this.dialogRef.close(this.schedule);
   }
 
   updateSchedule(): void {
     this.dialogRef.close({
       mealType: this.selectedMeal,
-      date: this.utilsService.formatDate(this.selectedDates),
+      mealDate: this.selectedDates,
     });
   }
 }

@@ -16,6 +16,9 @@ export class Schedule extends Base<string> {
 
   @prop()
   isDone: boolean = false;
+
+  @prop()
+  isPaid: boolean = false;
 }
 
 export default getModelForClass(Schedule);

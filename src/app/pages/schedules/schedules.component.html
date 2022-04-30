@@ -15,11 +15,11 @@
       </p>
     </mat-card-content>
   </mat-card>
-  <table mat-table [dataSource]="mySchedule" class="mat-elevation-z3">
+  <table mat-table [dataSource]="meals" class="mat-elevation-z3">
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>#</th>
       <td mat-cell *matCellDef="let element">
-        {{ element.id + 1 }}
+        {{ dialogScheduleService.returnIndex(meals, element) }}
       </td>
     </ng-container>
 
@@ -33,18 +33,43 @@
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef>Data</th>
       <td mat-cell *matCellDef="let element">
-        {{ element.date }}
+        {{ utilsService.formatDate(element.mealDate) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="used">
+      <th mat-header-cell *matHeaderCellDef>Usado?</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.isDone ? "✅" : "❌" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="paid">
+      <th mat-header-cell *matHeaderCellDef>Pago?</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.isPaid ? "✅" : "❌" }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef class="mat-header-cell">Ações</th>
       <td mat-cell *matCellDef="let row; let element">
-        <button mat-button (click)="openDialog(false, true, element)">
+        <button
+          mat-button
+          (click)="openDialog(false, true, element)"
+          disabled="{{ element.isDone || element.isPaid }}"
+        >
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-button (click)="openConfirmationDialog(element.id)">
+        <button
+          mat-button
+          (click)="openConfirmationDialog(this.meals.data.indexOf(element))"
+          disabled="{{ element.isDone || element.isPaid }}"
+        >
           <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-button disabled="{{ element.isDone }}">
+          <mat-icon>attach_money</mat-icon>
         </button>
       </td>
     </ng-container>
