@@ -39,7 +39,7 @@ export class DialogScheduleService {
     this.http
       .post(`${environment.api}/api/schedules/one`, req)
       .pipe(take(1))
-      .subscribe();
+      .subscribe(() => this.getAllSchedules());
   }
 
   deleteAllSchedules() {

@@ -22,6 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SchedulesComponent } from './pages/schedules/schedules.component';
 import { AutenticationComponent } from './account/autentication/autentication.component';
 import { HttpClientModule } from '@angular/common/http';
+import { SettingsComponent } from './pages/settings/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { HttpClientModule } from '@angular/common/http';
     ConfirmationDialogComponent,
     SchedulesComponent,
     AutenticationComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

@@ -33,7 +33,7 @@ export class SchedulesComponent implements OnInit {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private accountService: AccountService,
+    public accountService: AccountService,
     public dialog: MatDialog,
     public utilsService: UtilsService,
     public dialogScheduleService: DialogScheduleService

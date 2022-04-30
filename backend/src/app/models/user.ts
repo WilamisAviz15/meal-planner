@@ -5,6 +5,9 @@ import { Base } from './base';
 @plugin(mongooseUniqueValidator)
 export class User extends Base<string> {
   @prop({ required: true })
+  cpf: string = '';
+
+  @prop({ required: true })
   name: string = '';
 
   @prop({ required: true })
@@ -13,7 +16,7 @@ export class User extends Base<string> {
   @prop({ required: true })
   password: string = '';
 
-  @prop({})
+  @prop()
   isAdmin: boolean = false;
 }
 

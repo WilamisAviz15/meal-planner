@@ -73,8 +73,8 @@ export class MainComponent implements OnInit, OnDestroy {
   removeScheduling(index?: number): void {
     if (index != undefined) {
       this.dialogScheduleService.deleteSchedule(this.meals.data[index]);
-      this.meals.data.splice(index, 1);
-      this.table.renderRows();
+      // this.meals.data.splice(index, 1);
+      // this.table.renderRows();
     } else {
       this.meals.data = [];
       this.dialogScheduleService.deleteAllSchedules();

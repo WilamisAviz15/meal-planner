@@ -1,0 +1,32 @@
+.header {
+  flex: 1 1 auto;
+}
+
+.container {
+  max-width: 900px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 20px 70px 0;
+}
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
+mat-card {
+  margin-bottom: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.container__register-schedule {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+mat-card-content {
+  padding-top: 10px;
+}

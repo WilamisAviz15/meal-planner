@@ -1,7 +1,6 @@
 import UserModel from '../models/user';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/user';
-import { cloneDeep } from 'lodash';
 import { Mutex } from 'async-mutex';
 import * as express from 'express';
 
@@ -17,6 +16,7 @@ router.post('/createUser', async (req, res) => {
   const selectedUser = await UserModel.findOne({ mail: req.body.user.mail });
   if (selectedUser) return res.status(400).send('Email already exists');
   const user = new UserModel({
+    cpf: req.body.user.cpf,
     name: req.body.user.name,
     mail: req.body.user.mail,
     password: bcrypt.hashSync(req.body.user.password),
@@ -38,6 +38,26 @@ router.post('/createUser', async (req, res) => {
           error: err,
         });
       });
+  });
+});
+
+router.post('/updateUser', async (req, res) => {
+  const user = new User();
+  user.cpf = req.body.user.cpf;
+  user.name = req.body.user.name;
+  user.mail = req.body.user.mail;
+  user.password = bcrypt.hashSync(req.body.user.password);
+  user.isAdmin = req.body.user.isAdmin;
+
+  UserModel.findByIdAndUpdate(req.body.user._id, user, (err) => {
+    if (err)
+      return res.status(500).json({
+        message: 'Erro ao atualizar usuário!',
+        error: err,
+      });
+    return res.status(200).json({
+      message: 'Usuário Atualizado!',
+    });
   });
 });
 

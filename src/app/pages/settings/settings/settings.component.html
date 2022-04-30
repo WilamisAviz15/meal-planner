@@ -1,0 +1,62 @@
+<mat-toolbar color="primary" class="mat-elevation-z4">
+  <span> <a routerLink="/">Meal Planner</a></span>
+  <span class="header"></span>
+  <button mat-button routerLink="/schedules">MEUS AGENDAMENTOS</button>
+  <button mat-button routerLink="/settings">CONFIGURAÇÕES</button>
+  <button mat-button routerLink="/login" (click)="accountService.logout()">
+    SAIR
+  </button>
+</mat-toolbar>
+<div class="container">
+  <mat-card>
+    <mat-card-title>Meu Perfil</mat-card-title>
+    <mat-card-content>
+      <form #form>
+        <mat-form-field>
+          <mat-label>CPF</mat-label>
+          <input
+            matInput
+            [(ngModel)]="currentUserOptions.cpf"
+            name="cpf"
+            disabled="{{ !user.isAdmin }}"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Nome Completo</mat-label>
+          <input
+            matInput
+            [(ngModel)]="currentUserOptions.name"
+            name="name"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Usuário</mat-label>
+          <input matInput [(ngModel)]="currentUserOptions.mail" name="mail" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Senha</mat-label>
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="currentUserOptions.password"
+            name="password"
+          />
+        </mat-form-field>
+      </form>
+      <div class="container__register-schedule">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="updateProfile()"
+          [disabled]="disableSubmit()"
+        >
+          Atualizar perfil
+        </button>
+        <button mat-raised-button color="warn" (click)="cleanInputs()">
+          Limpar campos
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

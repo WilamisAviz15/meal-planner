@@ -5,6 +5,7 @@ import { LoginComponent } from './account/login/login.component';
 import { MainComponent } from './pages/main/main.component';
 import { SchedulesComponent } from './pages/schedules/schedules.component';
 import { AutenticationComponent } from './account/autentication/autentication.component';
+import { SettingsComponent } from './pages/settings/settings/settings.component';
 
 const routes: Routes = [
   {
@@ -18,7 +19,11 @@ const routes: Routes = [
     component: SchedulesComponent,
     canActivate: [AuthGuard],
   },
-
+  {
+    path: 'settings',
+    component: SettingsComponent,
+    canActivate: [AuthGuard],
+  },
   {
     path: '',
     component: AutenticationComponent,
