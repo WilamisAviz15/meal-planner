@@ -30,3 +30,13 @@ form {
 mat-card-content {
   padding-top: 10px;
 }
+
+.admin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.admin-label {
+  font-size: 14px;
+  margin-right: 10px;
+}

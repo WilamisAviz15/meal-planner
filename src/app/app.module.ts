@@ -22,7 +22,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SchedulesComponent } from './pages/schedules/schedules.component';
 import { AutenticationComponent } from './account/autentication/autentication.component';
 import { HttpClientModule } from '@angular/common/http';
-import { SettingsComponent } from './pages/settings/settings/settings.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,7 @@ import { SettingsComponent } from './pages/settings/settings/settings.component'
     ConfirmationDialogComponent,
     SchedulesComponent,
     AutenticationComponent,
-    SettingsComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,6 +53,7 @@ import { SettingsComponent } from './pages/settings/settings/settings.component'
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatSlideToggleModule,
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }],
 

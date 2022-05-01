@@ -1,16 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from 'backend/src/app/models/user';
-import { take } from 'rxjs';
+import { map, Observable, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { DialogScheduleService } from '../../main/dialog-schedule/dialog-schedule.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SettingsService {
+export class ProfileService {
   constructor(private http: HttpClient) {}
-
   updateProfile(user: User): void {
     const req = {
       user: user,
@@ -19,5 +17,17 @@ export class SettingsService {
       .post(`${environment.api}/api/users/updateUser`, req)
       .pipe(take(1))
       .subscribe();
+  }
+
+  getUserByCPF(cpf: string): Observable<User> {
+    const req = {
+      cpf: cpf,
+    };
+    return this.http
+      .post(`${environment.api}/api/users/getUserByCPF`, req)
+      .pipe(
+        take(1),
+        map((u) => u as User)
+      );
   }
 }

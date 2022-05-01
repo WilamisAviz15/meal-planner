@@ -5,7 +5,7 @@ import { LoginComponent } from './account/login/login.component';
 import { MainComponent } from './pages/main/main.component';
 import { SchedulesComponent } from './pages/schedules/schedules.component';
 import { AutenticationComponent } from './account/autentication/autentication.component';
-import { SettingsComponent } from './pages/settings/settings/settings.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -20,8 +20,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'settings',
-    component: SettingsComponent,
+    path: 'profile',
+    component: ProfileComponent,
     canActivate: [AuthGuard],
   },
   {

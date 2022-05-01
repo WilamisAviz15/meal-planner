@@ -12,6 +12,14 @@ router.get('/allUsers', async (req, res) => {
   return res.status(200).json(Array.from(Object.values(users)));
 });
 
+router.post('/getUserByCPF', async (req, res) => {
+  const user: User = await UserModel.findOne({ cpf: req.body.cpf });
+  if (user) return res.status(200).json(user);
+  return res.status(500).json({
+    message: 'Usuário não encontrado',
+  });
+});
+
 router.post('/createUser', async (req, res) => {
   const selectedUser = await UserModel.findOne({ mail: req.body.user.mail });
   if (selectedUser) return res.status(400).send('Email already exists');

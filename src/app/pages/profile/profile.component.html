@@ -2,14 +2,41 @@
   <span> <a routerLink="/">Meal Planner</a></span>
   <span class="header"></span>
   <button mat-button routerLink="/schedules">MEUS AGENDAMENTOS</button>
-  <button mat-button routerLink="/settings">CONFIGURAÇÕES</button>
+  <button mat-button routerLink="/profile">PERFIL</button>
   <button mat-button routerLink="/login" (click)="accountService.logout()">
     SAIR
   </button>
 </mat-toolbar>
 <div class="container">
+  <mat-card *ngIf="user.isAdmin">
+    <mat-card-title>Buscar perfil para editar</mat-card-title>
+    <mat-card-content>
+      <mat-form-field>
+        <mat-label>CPF</mat-label>
+        <input matInput [(ngModel)]="cpfToSearch" name="cpf" />
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        style="margin-left: 15px"
+        (click)="getUserByCPF()"
+        [disabled]="!cpfToSearch.length"
+      >
+        Consultar
+      </button>
+    </mat-card-content>
+  </mat-card>
   <mat-card>
-    <mat-card-title>Meu Perfil</mat-card-title>
+    <mat-card-title class="admin"
+      >Editar Perfil
+      <div *ngIf="user.isAdmin">
+        <mat-label class="admin-label">É administrador?</mat-label>
+        <mat-slide-toggle
+          [checked]="currentUserOptions.isAdmin"
+          (change)="verifyToggle($event)"
+        ></mat-slide-toggle>
+      </div>
+    </mat-card-title>
     <mat-card-content>
       <form #form>
         <mat-form-field>
@@ -52,6 +79,13 @@
           [disabled]="disableSubmit()"
         >
           Atualizar perfil
+        </button>
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="restoreInfoMyProfile()"
+        >
+          Resgatar informações do meu perfil
         </button>
         <button mat-raised-button color="warn" (click)="cleanInputs()">
           Limpar campos
