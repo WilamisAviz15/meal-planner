@@ -14,7 +14,6 @@ export interface Iuser {
   providedIn: 'root',
 })
 export class AccountService {
-  private users$ = new BehaviorSubject<User[]>([]);
   constructor(private http: HttpClient, private utils: UtilsService) {}
 
   login(user: Iuser) {
@@ -45,26 +44,16 @@ export class AccountService {
 
   getUserByToken(): void {
     this.http
-      .post<string>(`${environment.api}/api/login/parseTokenToId`, {
+      .post<string>(`${environment.api}/api/login/parseTokenToMail`, {
         token: this.getToken(),
       })
       .pipe(take(1))
-      .subscribe((u) => window.localStorage.setItem('idUser', u));
+      .subscribe((u) => window.localStorage.setItem('mail', u));
   }
 
   logout() {
     window.localStorage.clear();
   }
-
-  // getAllUsers(): BehaviorSubject<User[]> {
-  //   this.http
-  //     .get(`${environment.api}/api/users/allUsers`)
-  //     .pipe(take(1))
-  //     .subscribe((users: any) => {
-  //       this.users$.next(users as User[]);
-  //     });
-  //   return this.users$;
-  // }
 
   getAllUsers(): Observable<User[]> {
     return this.http
@@ -72,22 +61,18 @@ export class AccountService {
       .pipe(map((users) => users));
   }
 
-  getUser(): Observable<User[]> {
-    const usrTransform: User = new User();
+  getUser(mail: string): Observable<User[]> {
     return this.http
       .get<User[]>(`${environment.api}/api/users/allUsers`)
-      .pipe(
-        map((users) =>
-          users.filter((user) => user.mail == 'wilamis.micael@gmail.com')
-        )
-      );
+      .pipe(map((users) => users.filter((user) => user.mail == mail)));
   }
-
-  createAccount(account: any) {}
-
-  idToUser(id: string | User): User {
-    if (this.utils.isOfType<User>(id, ['_id', 'name', 'mail'])) return id;
-    const tmp = this.users$.getValue();
-    return tmp[tmp.findIndex((el) => el._id === id)];
+  createAccount(user: User) {
+    const req = {
+      user: user,
+    };
+    this.http
+      .post(`${environment.api}/api/users/createUser`, req)
+      .pipe(take(1))
+      .subscribe();
   }
 }

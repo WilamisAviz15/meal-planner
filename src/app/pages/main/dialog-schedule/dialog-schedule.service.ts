@@ -52,13 +52,11 @@ export class DialogScheduleService {
   getAllSchedules(): BehaviorSubject<Schedule[]> {
     this.http
       .get(`${environment.api}/api/schedules/all`)
-      .pipe(
-        take(1),
-        tap((c) => console.log(c))
-      )
+      .pipe(take(1))
       .subscribe((schedules) => {
         this.schedules$.next(schedules as Schedule[]);
       });
+    console.log(this.schedules$.getValue());
     return this.schedules$;
   }
 

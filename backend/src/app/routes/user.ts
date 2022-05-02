@@ -50,11 +50,15 @@ router.post('/createUser', async (req, res) => {
 });
 
 router.post('/updateUser', async (req, res) => {
+  const oldUser = await UserModel.findOne({ id: req.body.user._id });
   const user = new User();
   user.cpf = req.body.user.cpf;
   user.name = req.body.user.name;
   user.mail = req.body.user.mail;
-  user.password = bcrypt.hashSync(req.body.user.password);
+  user.password =
+    oldUser.password != req.body.user.password
+      ? bcrypt.hashSync(req.body.user.password)
+      : req.body.user.password;
   user.isAdmin = req.body.user.isAdmin;
 
   UserModel.findByIdAndUpdate(req.body.user._id, user, (err) => {

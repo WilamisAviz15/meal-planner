@@ -26,11 +26,13 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.accountService.getUser().subscribe((u) => {
-      this.user = u[0];
-      console.log(this.user);
-      this.restoreInfoMyProfile();
-    });
+    const currentUser = window.localStorage.getItem('mail');
+    if (currentUser) {
+      this.accountService.getUser(currentUser).subscribe((u) => {
+        this.user = u[0];
+        this.restoreInfoMyProfile();
+      });
+    }
   }
 
   updateProfile(): void {

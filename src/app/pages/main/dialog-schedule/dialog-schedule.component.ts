@@ -32,7 +32,6 @@ export class DialogScheduleComponent implements OnInit {
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<DialogScheduleComponent>,
-    private utilsService: UtilsService,
     private dialogScheduleService: DialogScheduleService
   ) {}
 

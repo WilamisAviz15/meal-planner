@@ -1,0 +1,38 @@
+<h2>Preencha as informações abaixo</h2>
+<mat-dialog-content class="mat-typography">
+  <mat-form-field>
+    <mat-label>Escreva o CPF</mat-label>
+    <input matInput [(ngModel)]="options.cpf" name="cpf" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Escreva o nome do usuário</mat-label>
+    <input matInput [(ngModel)]="options.name" name="name" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Escreva o email</mat-label>
+    <input matInput [(ngModel)]="options.mail" name="mail" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Escreva a senha</mat-label>
+    <input
+      matInput
+      [(ngModel)]="options.password"
+      name="password"
+      type="password"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Tipo de usuário</mat-label>
+    <mat-select [(ngModel)]="permissionSelected">
+      <mat-option *ngFor="let permission of permissions" [value]="permission">
+        {{ permission }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button color="primary" class="btn" (click)="addUser()">
+    Cadastrar
+  </button>
+  <button mat-stroked-button color="warn" class="btn" mat-dialog-close>
+    Cancelar
+  </button>
+</mat-dialog-content>

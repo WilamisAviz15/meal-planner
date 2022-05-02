@@ -24,6 +24,9 @@ import { AutenticationComponent } from './account/autentication/autentication.co
 import { HttpClientModule } from '@angular/common/http';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DialogAdminComponent } from './pages/main/dialog-admin/dialog-admin.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +38,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
     SchedulesComponent,
     AutenticationComponent,
     ProfileComponent,
+    DialogAdminComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,8 +58,10 @@ import { ProfileComponent } from './pages/profile/profile.component';
     ReactiveFormsModule,
     HttpClientModule,
     MatSlideToggleModule,
+    MatProgressSpinnerModule,
+    BrowserAnimationsModule,
   ],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }],
 
   bootstrap: [AppComponent],
 })

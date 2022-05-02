@@ -18,6 +18,27 @@
       </p>
     </mat-card-content>
   </mat-card>
+  <div *ngIf="user.isAdmin">
+    <h1 class="container__title-my-schedule">Painel do Administrador</h1>
+    <mat-card>
+      <mat-card-content class="container__register-schedule">
+        <button mat-stroked-button color="primary" (click)="adminDialog()">
+          Cadastrar novo usuário
+        </button>
+        <button mat-stroked-button color="primary" (click)="openDialog(false)">
+          Exibir lista de usuários
+        </button>
+        <button mat-stroked-button color="primary">Pesquisar usuário</button>
+        <button mat-stroked-button color="primary">
+          Consultar todos os agendamentos
+        </button>
+        <button mat-stroked-button color="primary">
+          Consultar agendamentos para hoje
+        </button>
+        <button mat-stroked-button color="primary">Liberar refeição</button>
+      </mat-card-content>
+    </mat-card>
+  </div>
   <h1 class="container__title-my-schedule">Mural de Avisos</h1>
   carrosssel com imagem de avisos e cardapio
   <!-- <mat-card class="dashboard">
@@ -89,6 +110,12 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
+  <mat-card
+    *ngIf="isLoading"
+    style="display: flex; justify-content: center; align-items: center"
+  >
+    <mat-spinner color="primary" mode="indeterminate"></mat-spinner>
+  </mat-card>
 
   <h1 class="container__title-my-schedule">Realizar agendamento</h1>
   <mat-card>

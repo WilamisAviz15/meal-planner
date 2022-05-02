@@ -9,6 +9,7 @@ import { ConfirmationDialogComponent } from './dialog-schedule/confirmation-dial
 import { Subject, take, takeUntil } from 'rxjs';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { AccountService } from 'src/app/shared/account/account.service';
+import { DialogAdminComponent } from './dialog-admin/dialog-admin.component';
 
 export interface schedule {
   id: number;
@@ -31,7 +32,7 @@ export class MainComponent implements OnInit, OnDestroy {
   @ViewChild('table') table!: MatTable<schedule>;
   meals = new MatTableDataSource<Schedule>();
   private destroy$ = new Subject<void>();
-
+  isLoading = true;
   title = CONFIRMATION_DIALOG_TYPE;
   displayedColumns: string[] = [
     'id',
@@ -41,6 +42,7 @@ export class MainComponent implements OnInit, OnDestroy {
     'paid',
     'actions',
   ];
+
   constructor(
     public dialog: MatDialog,
     public utilsService: UtilsService,
@@ -56,16 +58,20 @@ export class MainComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const token = this.accountService.getToken();
     console.log('token:', token);
-    const currentUser = window.localStorage.getItem('idUser');
-    this.accountService.getUser().subscribe((u) => {
-      this.user = u[0];
-      console.log(this.user);
-    });
+    const currentUser = window.localStorage.getItem('mail');
+    if (currentUser) {
+      console.log('current', currentUser);
+      this.accountService.getUser(currentUser).subscribe((u) => {
+        this.user = u[0];
+      });
+    }
 
     this.dialogScheduleService
       .getAllSchedules()
       .pipe(takeUntil(this.destroy$))
       .subscribe((meal) => {
+        this.isLoading = false;
+        // const filteredMeals = meal.filter((m) => m.user == this.user._id);
         this.meals = new MatTableDataSource(meal);
       });
   }
@@ -73,8 +79,6 @@ export class MainComponent implements OnInit, OnDestroy {
   removeScheduling(index?: number): void {
     if (index != undefined) {
       this.dialogScheduleService.deleteSchedule(this.meals.data[index]);
-      // this.meals.data.splice(index, 1);
-      // this.table.renderRows();
     } else {
       this.meals.data = [];
       this.dialogScheduleService.deleteAllSchedules();
@@ -102,6 +106,12 @@ export class MainComponent implements OnInit, OnDestroy {
           }
         }
       });
+  }
+
+  adminDialog(): void {
+    this.dialog.open(DialogAdminComponent, {
+      data: {},
+    });
   }
 
   openConfirmationDialog(idx?: number) {

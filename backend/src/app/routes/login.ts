@@ -18,19 +18,14 @@ router.post('/', async (req, res) => {
   if (!passwordAndUserMatch)
     return res.status(400).send('Email or Password incorrect');
   const token = jwt.sign(
-    { _id: selectedUser._id, admin: selectedUser.isAdmin },
+    { mail: selectedUser.mail, admin: selectedUser.isAdmin },
     secret_token!
   );
   res.header('authorization-token', token);
-  const { _id } = selectedUser;
-  const userWithToken = {
-    user: _id,
-    token: token,
-  };
   res.status(201).json(token);
 });
 
-router.post('/parseTokenToId', (req, res) => {
+router.post('/parseTokenToMail', (req, res) => {
   const tokenConverted = jwt.verify(req.body.token, secret_token!);
   res.status(201).json(Array.from(Object.values(tokenConverted))[0]);
 });
