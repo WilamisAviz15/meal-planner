@@ -1,5 +1,8 @@
-<h2>Preencha as informações abaixo</h2>
-<mat-dialog-content class="mat-typography">
+<mat-dialog-content
+  class="mat-typography"
+  *ngIf="componentType == type.NEW_USER"
+>
+  <h2>Preencha as informações abaixo para {{ type.NEW_USER }}</h2>
   <mat-form-field>
     <mat-label>Escreva o CPF</mat-label>
     <input matInput [(ngModel)]="options.cpf" name="cpf" />
@@ -34,5 +37,77 @@
   </button>
   <button mat-stroked-button color="warn" class="btn" mat-dialog-close>
     Cancelar
+  </button>
+</mat-dialog-content>
+
+<mat-dialog-content
+  class="mat-typography"
+  *ngIf="componentType == type.ALL_USER"
+>
+  <div class="header_dialog">
+    <span>Listagem de {{ type.ALL_USER }}</span>
+    <button mat-button color="primary" (click)="dialogRef.close()">X</button>
+  </div>
+  <table mat-table [dataSource]="users" #table>
+    <ng-container matColumnDef="cpf">
+      <th mat-header-cell *matHeaderCellDef>CPF</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.cpf }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Nome completo</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.name }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="mail">
+      <th mat-header-cell *matHeaderCellDef>Usuário</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.mail }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="isAdmin">
+      <th mat-header-cell *matHeaderCellDef>Tipo de usuário</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.isAdmin ? "Administrador" : "Estudante" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="mat-header-cell">Ações</th>
+      <td mat-cell *matCellDef="let row; let element">
+        <button mat-button>
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-button>
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</mat-dialog-content>
+
+<mat-dialog-content
+  class="mat-typography"
+  *ngIf="componentType == type.CONFIRM_MEAL"
+>
+  <div class="header_dialog">
+    <span style="padding-bottom: 10px"
+      >Preencha o campo com CPF do usuário</span
+    >
+  </div>
+  <mat-form-field>
+    <mat-label>CPF do usuário</mat-label>
+    <input matInput name="cpf" [(ngModel)]="cpfToSearch" />
+  </mat-form-field>
+  <button mat-raised-button color="primary" class="btn" (click)="openDialog()">
+    Procurar
   </button>
 </mat-dialog-content>

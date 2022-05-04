@@ -27,6 +27,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogAdminComponent } from './pages/main/dialog-admin/dialog-admin.component';
+import { ConfirmationMealDialogComponent } from './pages/main/dialog-admin/confirmation-meal-dialog/confirmation-meal-dialog.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { DialogAdminComponent } from './pages/main/dialog-admin/dialog-admin.com
     AutenticationComponent,
     ProfileComponent,
     DialogAdminComponent,
+    ConfirmationMealDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -5,3 +5,28 @@ mat-dialog-content {
 .btn {
   margin-bottom: 15px;
 }
+
+table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+th {
+  align-items: center;
+  color: #000;
+  padding-right: 100px;
+}
+
+.mat-header-cell,
+.mat-cell {
+  text-align: center;
+}
+
+.header_dialog {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header_dialog span {
+  font-size: 18px;
+}

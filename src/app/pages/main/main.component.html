@@ -22,10 +22,18 @@
     <h1 class="container__title-my-schedule">Painel do Administrador</h1>
     <mat-card>
       <mat-card-content class="container__register-schedule">
-        <button mat-stroked-button color="primary" (click)="adminDialog()">
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="adminDialog(componentType.NEW_USER)"
+        >
           Cadastrar novo usuário
         </button>
-        <button mat-stroked-button color="primary" (click)="openDialog(false)">
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="adminDialog(componentType.ALL_USER)"
+        >
           Exibir lista de usuários
         </button>
         <button mat-stroked-button color="primary">Pesquisar usuário</button>
@@ -35,7 +43,13 @@
         <button mat-stroked-button color="primary">
           Consultar agendamentos para hoje
         </button>
-        <button mat-stroked-button color="primary">Liberar refeição</button>
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="adminDialog(componentType.CONFIRM_MEAL)"
+        >
+          Liberar refeição
+        </button>
       </mat-card-content>
     </mat-card>
   </div>

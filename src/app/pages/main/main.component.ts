@@ -22,6 +22,13 @@ export enum CONFIRMATION_DIALOG_TYPE {
   DELETE_ALL_SCHEDULE = 'Tem certeza que deseja cancelar todos os agendamentos realizados?',
 }
 
+export enum ADMIN_DIALOG_TYPE {
+  NEW_USER = 'cadastrar novo usuário',
+  ALL_USER = 'todos os usuários',
+  SEARCH_USER = 'Buscar usuário',
+  CONFIRM_MEAL = 'liberar refeição',
+}
+
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
@@ -34,6 +41,7 @@ export class MainComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   isLoading = true;
   title = CONFIRMATION_DIALOG_TYPE;
+  componentType = ADMIN_DIALOG_TYPE;
   displayedColumns: string[] = [
     'id',
     'mealType',
@@ -70,9 +78,9 @@ export class MainComponent implements OnInit, OnDestroy {
       .getAllSchedules()
       .pipe(takeUntil(this.destroy$))
       .subscribe((meal) => {
-        this.isLoading = false;
         // const filteredMeals = meal.filter((m) => m.user == this.user._id);
         this.meals = new MatTableDataSource(meal);
+        this.isLoading = false;
       });
   }
 
@@ -108,9 +116,11 @@ export class MainComponent implements OnInit, OnDestroy {
       });
   }
 
-  adminDialog(): void {
+  adminDialog(type: ADMIN_DIALOG_TYPE): void {
     this.dialog.open(DialogAdminComponent, {
-      data: {},
+      data: {
+        type: type,
+      },
     });
   }
 
