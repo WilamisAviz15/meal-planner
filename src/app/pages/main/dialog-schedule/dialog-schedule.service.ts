@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Schedule } from './../../../../../backend/src/app/models/schedule';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { BehaviorSubject, take, tap } from 'rxjs';
+import { BehaviorSubject, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +29,7 @@ export class DialogScheduleService {
     this.http
       .post(`${environment.api}/api/schedules/updateSchedule`, req)
       .pipe(take(1))
-      .subscribe();
+      .subscribe(() => this.getAllSchedules());
   }
 
   deleteSchedule(schedule: Schedule) {

@@ -19,6 +19,7 @@ import { Schedule } from 'backend/src/app/models/schedule';
 export class SchedulesComponent implements OnInit {
   displayedColumns: string[] = [
     'id',
+    'user',
     'mealType',
     'date',
     'used',
