@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   MatDialog,
   MatDialogRef,
@@ -6,7 +6,7 @@ import {
 } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { User } from 'backend/src/app/models/user';
-import { combineLatest, take } from 'rxjs';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { AccountService } from 'src/app/shared/account/account.service';
 import { ADMIN_DIALOG_TYPE } from '../main.component';
 import { DialogScheduleService } from '../dialog-schedule/dialog-schedule.service';
@@ -30,7 +30,7 @@ export enum ACTIONS {
   templateUrl: './dialog-admin.component.html',
   styleUrls: ['./dialog-admin.component.scss'],
 })
-export class DialogAdminComponent implements OnInit {
+export class DialogAdminComponent implements OnInit, OnDestroy {
   user: User = new User();
   permissions = Object.values(USER_PERMISSION);
   permissionSelected = '';
@@ -40,12 +40,14 @@ export class DialogAdminComponent implements OnInit {
   actionType = ACTIONS;
   users = new MatTableDataSource<User>();
   userMeals = new MatTableDataSource<Schedule>();
+  private destroy$ = new Subject<void>();
   options = {
     name: '',
     cpf: '',
     mail: '',
     password: '',
     isAdmin: false,
+    _id: '',
   };
   displayedColumns: string[] = ['cpf', 'name', 'mail', 'isAdmin', 'actions'];
   displayedColumnsSchedule: string[] = ['mealType', 'date', 'actions'];
@@ -59,15 +61,30 @@ export class DialogAdminComponent implements OnInit {
     public utilsService: UtilsService
   ) {}
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
+    if (this.data.user) {
+      this.options.cpf = this.data.user.cpf;
+      this.permissionSelected = this.data.user.isAdmin
+        ? USER_PERMISSION.ADMIN
+        : USER_PERMISSION.STUDENT;
+      this.options.mail = this.data.user.mail;
+      this.options.name = this.data.user.name;
+      this.options.password = this.data.user.password;
+      this.options._id = this.data.user._id;
+    }
     this.componentType = this.data.type;
     this.showAllUsers();
   }
 
   searchUserByCPF(): void {
     this.accountService
-      .getAllUsers()
-      .pipe(take(1))
+      .getUsers()
+      .pipe(take(2))
       .subscribe((users) => {
         const userFiltered = users.filter(
           (users) => users.cpf == this.cpfToSearch
@@ -78,22 +95,24 @@ export class DialogAdminComponent implements OnInit {
 
   showAllUsers(): void {
     this.accountService
-      .getAllUsers()
-      .pipe(take(1))
+      .getUsers()
+      .pipe(takeUntil(this.destroy$))
       .subscribe((users) => {
         this.users = new MatTableDataSource(users);
       });
   }
 
-  addUser(): void {
+  addOrEditUser(): void {
+    this.user._id = this.options._id;
     this.user.cpf = this.options.cpf;
     this.user.name = this.options.name;
     this.user.mail = this.options.mail;
     this.user.password = this.options.password;
     this.user.isAdmin =
       this.permissionSelected == USER_PERMISSION.ADMIN ? true : false;
-    console.log(this.user);
-    this.accountService.createAccount(this.user);
+    this.data.editing
+      ? this.accountService.editAccount(this.user)
+      : this.accountService.createAccount(this.user);
     this.dialogRef.close();
   }
 
@@ -101,7 +120,7 @@ export class DialogAdminComponent implements OnInit {
     let scheduleFilteredByUser;
     combineLatest([
       this.dialogScheduleService.getAllSchedules(),
-      this.accountService.getAllUsers(),
+      this.accountService.getUsers(),
     ])
       .pipe(take(1))
       .subscribe(([schedules, users]) => {
@@ -149,6 +168,28 @@ export class DialogAdminComponent implements OnInit {
               break;
           }
         }
+      });
+  }
+
+  editDialog(user: User): void {
+    this.dialog.open(DialogAdminComponent, {
+      data: {
+        user: user,
+        type: this.type.NEW_AND_EDIT_USER,
+        editing: true,
+      },
+    });
+  }
+
+  deleteUser(user: User): void {
+    this.dialog
+      .open(ConfirmationDialogComponent, {
+        data: { title: 'Tem certeza que deseja excluir o usuário?' },
+      })
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) this.accountService.deleteUser(user);
       });
   }
 }

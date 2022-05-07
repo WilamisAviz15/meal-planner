@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, take } from 'rxjs';
 import { User } from 'backend/src/app/models/user';
-import { cloneDeep } from 'lodash';
 export interface Iuser {
   mail: string;
   password: string;
@@ -14,6 +13,8 @@ export interface Iuser {
   providedIn: 'root',
 })
 export class AccountService {
+  users$ = new BehaviorSubject<User[]>([]);
+
   constructor(private http: HttpClient, private utils: UtilsService) {}
 
   login(user: Iuser) {
@@ -55,10 +56,14 @@ export class AccountService {
     window.localStorage.clear();
   }
 
-  getAllUsers(): Observable<User[]> {
-    return this.http
-      .get<User[]>(`${environment.api}/api/users/allUsers`)
-      .pipe(map((users) => users));
+  getUsers(): BehaviorSubject<User[]> {
+    this.http
+      .get(`${environment.api}/api/users/allUsers`)
+      .pipe(take(1))
+      .subscribe((users) => {
+        this.users$.next(users as User[]);
+      });
+    return this.users$;
   }
 
   getUser(mail: string): Observable<User[]> {
@@ -66,6 +71,7 @@ export class AccountService {
       .get<User[]>(`${environment.api}/api/users/allUsers`)
       .pipe(map((users) => users.filter((user) => user.mail == mail)));
   }
+
   createAccount(user: User) {
     const req = {
       user: user,
@@ -74,5 +80,26 @@ export class AccountService {
       .post(`${environment.api}/api/users/createUser`, req)
       .pipe(take(1))
       .subscribe();
+  }
+
+  editAccount(user: User) {
+    console.log(user);
+    const req = {
+      user: user,
+    };
+    this.http
+      .post(`${environment.api}/api/users/updateUser`, req)
+      .pipe(take(1))
+      .subscribe(() => this.getUsers());
+  }
+
+  deleteUser(user: User) {
+    const req = {
+      user: user,
+    };
+    this.http
+      .post(`${environment.api}/api/users/deleteUser`, req)
+      .pipe(take(1))
+      .subscribe(() => this.getUsers());
   }
 }

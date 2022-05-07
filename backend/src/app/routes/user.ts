@@ -73,4 +73,17 @@ router.post('/updateUser', async (req, res) => {
   });
 });
 
+router.post('/deleteUser', (req, res) => {
+  UserModel.findByIdAndDelete(req.body.user._id, req.body.user, (err) => {
+    if (err)
+      return res.status(500).json({
+        message: 'Erro ao deletar usuário!',
+        error: err,
+      });
+    return res.status(200).json({
+      message: 'Usuário Deletado!',
+    });
+  });
+});
+
 export default router;

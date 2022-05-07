@@ -23,9 +23,8 @@ export enum CONFIRMATION_DIALOG_TYPE {
 }
 
 export enum ADMIN_DIALOG_TYPE {
-  NEW_USER = 'cadastrar novo usuário',
+  NEW_AND_EDIT_USER,
   ALL_USER = 'todos os usuários',
-  SEARCH_USER = 'Buscar usuário',
   CONFIRM_MEAL = 'liberar refeição',
 }
 
@@ -122,6 +121,8 @@ export class MainComponent implements OnInit, OnDestroy {
   adminDialog(type: ADMIN_DIALOG_TYPE): void {
     this.dialog.open(DialogAdminComponent, {
       data: {
+        user: undefined,
+        editing: false,
         type: type,
       },
     });
