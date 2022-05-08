@@ -59,3 +59,18 @@ th {
   justify-content: space-evenly;
   flex-wrap: wrap;
 }
+
+.metrics {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  .title {
+    font-size: 17px;
+    font-weight: 400;
+    margin-bottom: 7px;
+  }
+  .value {
+    font-size: 20px;
+    font-weight: bold;
+  }
+}

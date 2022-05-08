@@ -1,18 +1,19 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { User } from 'backend/src/app/models/user';
 import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { AccountService } from 'src/app/shared/account/account.service';
-import { ADMIN_DIALOG_TYPE } from '../main.component';
+import { ADMIN_DIALOG_TYPE, schedule } from '../main.component';
 import { DialogScheduleService } from '../dialog-schedule/dialog-schedule.service';
 import { Schedule } from 'backend/src/app/models/schedule';
 import { UtilsService } from 'src/app/shared/services/utils.service';
 import { ConfirmationDialogComponent } from '../dialog-schedule/confirmation-dialog/confirmation-dialog.component';
+import { DialogScheduleComponent } from '../dialog-schedule/dialog-schedule.component';
 
 export enum USER_PERMISSION {
   ADMIN = 'Administrador',
@@ -40,6 +41,7 @@ export class DialogAdminComponent implements OnInit, OnDestroy {
   actionType = ACTIONS;
   users = new MatTableDataSource<User>();
   userMeals = new MatTableDataSource<Schedule>();
+  allMeals = new MatTableDataSource<Schedule>();
   private destroy$ = new Subject<void>();
   options = {
     name: '',
@@ -51,6 +53,17 @@ export class DialogAdminComponent implements OnInit, OnDestroy {
   };
   displayedColumns: string[] = ['cpf', 'name', 'mail', 'isAdmin', 'actions'];
   displayedColumnsSchedule: string[] = ['mealType', 'date', 'actions'];
+  displayedColumnsSchedules: string[] = [
+    'id',
+    'user',
+    'mealType',
+    'date',
+    'used',
+    'paid',
+    'actions',
+  ];
+  mySchedule: schedule[] = [];
+  @ViewChild(MatTable) tableSchedules!: MatTable<schedule>;
 
   constructor(
     public dialog: MatDialog,
@@ -79,6 +92,7 @@ export class DialogAdminComponent implements OnInit, OnDestroy {
     }
     this.componentType = this.data.type;
     this.showAllUsers();
+    this.showAllSchedules();
   }
 
   searchUserByCPF(): void {
@@ -99,6 +113,15 @@ export class DialogAdminComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((users) => {
         this.users = new MatTableDataSource(users);
+      });
+  }
+
+  showAllSchedules(): void {
+    this.dialogScheduleService
+      .getAllSchedules()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((meals) => {
+        this.allMeals = new MatTableDataSource(meals);
       });
   }
 
@@ -191,5 +214,56 @@ export class DialogAdminComponent implements OnInit, OnDestroy {
       .subscribe((response) => {
         if (response) this.accountService.deleteUser(user);
       });
+  }
+
+  openScheduleDialog(
+    daily?: boolean,
+    editing?: boolean,
+    currentMeal?: Schedule
+  ) {
+    this.dialog
+      .open(DialogScheduleComponent, {
+        data: {
+          daily: daily,
+          editing: editing,
+          currentMeal: currentMeal,
+          userId: this.user,
+        },
+      })
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          if (editing && currentMeal) {
+            currentMeal.mealDate = response.mealDate;
+            currentMeal.mealType = response.mealType;
+            this.dialogScheduleService.updateSchedule(currentMeal);
+          }
+        }
+      });
+  }
+
+  openConfirmationDialog(idx?: number) {
+    idx = idx != undefined ? idx : undefined;
+    this.dialog
+      .open(ConfirmationDialogComponent, {
+        data: {
+          title: 'Tem certeza que deseja cancelar o agendamento?',
+          id: idx,
+        },
+      })
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) this.removeScheduling(idx);
+      });
+  }
+
+  removeScheduling(index?: number): void {
+    if (index != undefined) {
+      this.dialogScheduleService.deleteSchedule(this.allMeals.data[index]);
+      this.allMeals.data.splice(index, 1);
+      this.tableSchedules.renderRows();
+    }
   }
 }

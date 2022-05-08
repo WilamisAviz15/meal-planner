@@ -43,6 +43,13 @@
         >
           Liberar refeição
         </button>
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="adminDialog(componentType.SHOW_ALL_SCHEDULES)"
+        >
+          Exibir lista de agendamentos
+        </button>
       </mat-card-content>
     </mat-card>
   </div>
@@ -54,6 +61,35 @@
       <h3 class="dashboard__schedule-h3">5</h3>
     </div>
   </mat-card> -->
+  <div *ngIf="user.isAdmin">
+    <h1 class="container__title-my-schedule">Métricas</h1>
+    <mat-card class="metrics">
+      <div>
+        <div class="title">Refeições agendadas para hoje</div>
+        <div class="value">19</div>
+      </div>
+      <div>
+        <div class="title">Refeições agendadas e pagas para hoje</div>
+        <div class="value">1</div>
+      </div>
+      <div>
+        <div class="title">Refeições agendadas e não pagas para hoje</div>
+        <div class="value">18</div>
+      </div>
+      <div>
+        <div class="title">Refeições totais agendadas</div>
+        <div class="value">20</div>
+      </div>
+      <div>
+        <div class="title">Refeições totais agendadas e pagas</div>
+        <div class="value">1</div>
+      </div>
+      <div>
+        <div class="title">Refeições totais agendadas e não pagas</div>
+        <div class="value">19</div>
+      </div>
+    </mat-card>
+  </div>
   <h1 class="container__title-my-schedule">Meus agendamentos da semana</h1>
   <table mat-table [dataSource]="meals" class="mat-elevation-z3" #table>
     <ng-container matColumnDef="id">

@@ -76,7 +76,7 @@
       Mostrar todos os usuários
     </button>
   </div>
-  <table mat-table [dataSource]="users" #table>
+  <table mat-table [dataSource]="users" #table class="large-table">
     <ng-container matColumnDef="cpf">
       <th mat-header-cell *matHeaderCellDef>CPF</th>
       <td mat-cell *matCellDef="let element">
@@ -190,5 +190,82 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumnsSchedule"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumnsSchedule"></tr>
+  </table>
+</mat-dialog-content>
+
+<mat-dialog-content
+  class="mat-typography"
+  *ngIf="componentType == type.SHOW_ALL_SCHEDULES"
+>
+  <div class="header_dialog">
+    <span>Listagem de {{ type.SHOW_ALL_SCHEDULES }}</span>
+    <button mat-button color="primary" (click)="dialogRef.close()">X</button>
+  </div>
+  <table mat-table [dataSource]="allMeals" #tableSchedules class="large-table">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>#</th>
+      <td mat-cell *matCellDef="let element">
+        {{ dialogScheduleService.returnIndex(allMeals, element) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="user">
+      <th mat-header-cell *matHeaderCellDef>Usuário</th>
+      <td mat-cell *matCellDef="let element"></td>
+    </ng-container>
+
+    <ng-container matColumnDef="mealType">
+      <th mat-header-cell *matHeaderCellDef>Tipo de refeição</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.mealType }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Data</th>
+      <td mat-cell *matCellDef="let element">
+        {{ utilsService.formatDate(element.mealDate) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="used">
+      <th mat-header-cell *matHeaderCellDef>Usado?</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.isDone ? "✅" : "❌" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="paid">
+      <th mat-header-cell *matHeaderCellDef>Pago?</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.isPaid ? "✅" : "❌" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="mat-header-cell">Ações</th>
+      <td mat-cell *matCellDef="let row; let element">
+        <button
+          mat-button
+          disabled="{{ element.isDone || element.isPaid }}"
+          (click)="openScheduleDialog(false, true, element)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-button
+          disabled="{{ element.isDone || element.isPaid }}"
+          (click)="openConfirmationDialog(this.allMeals.data.indexOf(element))"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-button disabled="{{ element.isDone }}">
+          <mat-icon>attach_money</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsSchedules"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsSchedules"></tr>
   </table>
 </mat-dialog-content>

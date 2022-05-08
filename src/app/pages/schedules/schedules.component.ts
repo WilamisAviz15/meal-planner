@@ -56,8 +56,11 @@ export class SchedulesComponent implements OnInit {
     this.dialogScheduleService
       .getAllSchedules()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((meal) => {
-        this.meals = new MatTableDataSource(meal);
+      .subscribe((meals) => {
+        const scheduleFilteredByUser = meals.filter(
+          (s) => s.user == this.user._id
+        );
+        this.meals = new MatTableDataSource(scheduleFilteredByUser);
       });
   }
 

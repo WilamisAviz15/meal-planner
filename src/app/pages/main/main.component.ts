@@ -26,6 +26,7 @@ export enum ADMIN_DIALOG_TYPE {
   NEW_AND_EDIT_USER,
   ALL_USER = 'todos os usuários',
   CONFIRM_MEAL = 'liberar refeição',
+  SHOW_ALL_SCHEDULES = 'todas os agendamentos',
 }
 
 @Component({
