@@ -7,7 +7,7 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { UtilsService } from 'src/app/shared/services/utils.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogScheduleComponent } from '../main/dialog-schedule/dialog-schedule.component';
-import { Subject, take, takeUntil } from 'rxjs';
+import { debounceTime, Subject, take, takeUntil } from 'rxjs';
 import { ConfirmationDialogComponent } from '../main/dialog-schedule/confirmation-dialog/confirmation-dialog.component';
 import { Schedule } from 'backend/src/app/models/schedule';
 
@@ -19,7 +19,6 @@ import { Schedule } from 'backend/src/app/models/schedule';
 export class SchedulesComponent implements OnInit {
   displayedColumns: string[] = [
     'id',
-    'user',
     'mealType',
     'date',
     'used',
@@ -55,7 +54,7 @@ export class SchedulesComponent implements OnInit {
 
     this.dialogScheduleService
       .getAllSchedules()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$), debounceTime(500))
       .subscribe((meals) => {
         const scheduleFilteredByUser = meals.filter(
           (s) => s.user == this.user._id
