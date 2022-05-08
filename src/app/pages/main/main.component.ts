@@ -50,6 +50,14 @@ export class MainComponent implements OnInit, OnDestroy {
     'paid',
     'actions',
   ];
+  metrics = {
+    totalMealToday: 0,
+    totalMealTodayPaid: 0,
+    totalMealTodayNotPaid: 0,
+    totalMeal: 0,
+    totalMealPaid: 0,
+    totalMealNotPaid: 0,
+  };
 
   constructor(
     public dialog: MatDialog,
@@ -84,6 +92,64 @@ export class MainComponent implements OnInit, OnDestroy {
         const filteredMeals = meal.filter((m) => m.user == this.user._id);
         this.meals = new MatTableDataSource(filteredMeals);
         this.isLoading = false;
+      });
+
+    this.dialogScheduleService
+      .getAllSchedules()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((schedules) => {
+        const dateNow = this.utilsService.formatDate(new Date());
+        const ttlMealToday = schedules.reduce((acc, schedule) => {
+          return this.utilsService.formatDate(schedule.mealDate) == dateNow &&
+            schedule.isDone == false
+            ? (acc = acc + 1)
+            : acc;
+        }, 0);
+        const ttlMealTodayPaid = schedules.reduce((acc, schedule) => {
+          return this.utilsService.formatDate(schedule.mealDate) == dateNow &&
+            schedule.isPaid == true &&
+            schedule.isDone == false
+            ? (acc = acc + 1)
+            : acc;
+        }, 0);
+        const ttlMealTodayNotPaid = schedules.reduce((acc, schedule) => {
+          return this.utilsService.formatDate(schedule.mealDate) == dateNow &&
+            schedule.isPaid == false &&
+            schedule.isDone == false
+            ? (acc = acc + 1)
+            : acc;
+        }, 0);
+        const ttlMeals = schedules.reduce(
+          (acc, schedule) => (schedule.isDone == false ? (acc = acc + 1) : acc),
+          0
+        );
+        const ttlMealPaid = schedules.reduce(
+          (acc, schedule) =>
+            schedule.isPaid == true && schedule.isDone == false
+              ? (acc = acc + 1)
+              : acc,
+          0
+        );
+        const ttlMealNotPaid = schedules.reduce(
+          (acc, schedule) =>
+            schedule.isPaid == false && schedule.isDone == false
+              ? (acc = acc + 1)
+              : acc,
+          0
+        );
+        this.metrics.totalMealToday = ttlMealToday;
+        this.metrics.totalMealTodayPaid = ttlMealTodayPaid;
+        this.metrics.totalMealTodayNotPaid = ttlMealTodayNotPaid;
+        this.metrics.totalMeal = ttlMeals;
+        this.metrics.totalMealPaid = ttlMealPaid;
+        this.metrics = {
+          totalMealToday: ttlMealToday,
+          totalMealTodayPaid: ttlMealTodayPaid,
+          totalMealTodayNotPaid: ttlMealTodayNotPaid,
+          totalMeal: ttlMeals,
+          totalMealPaid: ttlMealPaid,
+          totalMealNotPaid: ttlMealNotPaid,
+        };
       });
   }
 

@@ -66,27 +66,27 @@
     <mat-card class="metrics">
       <div>
         <div class="title">Refeições agendadas para hoje</div>
-        <div class="value">19</div>
+        <div class="value">{{ metrics.totalMealToday }}</div>
       </div>
       <div>
         <div class="title">Refeições agendadas e pagas para hoje</div>
-        <div class="value">1</div>
+        <div class="value">{{ metrics.totalMealTodayPaid }}</div>
       </div>
       <div>
         <div class="title">Refeições agendadas e não pagas para hoje</div>
-        <div class="value">18</div>
+        <div class="value">{{ metrics.totalMealTodayNotPaid }}</div>
       </div>
       <div>
         <div class="title">Refeições totais agendadas</div>
-        <div class="value">20</div>
+        <div class="value">{{ metrics.totalMeal }}</div>
       </div>
       <div>
         <div class="title">Refeições totais agendadas e pagas</div>
-        <div class="value">1</div>
+        <div class="value">{{ metrics.totalMealPaid }}</div>
       </div>
       <div>
         <div class="title">Refeições totais agendadas e não pagas</div>
-        <div class="value">19</div>
+        <div class="value">{{ metrics.totalMealNotPaid }}</div>
       </div>
     </mat-card>
   </div>
