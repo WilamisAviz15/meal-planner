@@ -55,10 +55,13 @@ router.post('/updateUser', async (req, res) => {
   user.cpf = req.body.user.cpf;
   user.name = req.body.user.name;
   user.mail = req.body.user.mail;
-  user.password =
-    oldUser.password != req.body.user.password
-      ? bcrypt.hashSync(req.body.user.password)
-      : req.body.user.password;
+  const comparePassword = bcrypt.compareSync(
+    req.body.user.password,
+    oldUser.password
+  );
+  user.password = comparePassword
+    ? oldUser.password
+    : bcrypt.hashSync(req.body.user.password);
   user.isAdmin = req.body.user.isAdmin;
 
   UserModel.findByIdAndUpdate(req.body.user._id, user, (err) => {
