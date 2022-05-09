@@ -2,9 +2,9 @@ import { UtilsService } from 'src/app/shared/services/utils.service';
 import { environment } from './../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, take } from 'rxjs';
+import { BehaviorSubject, map, Observable, take, debounceTime } from 'rxjs';
 import { User } from 'backend/src/app/models/user';
-export interface Iuser {
+export interface UserLogin {
   mail: string;
   password: string;
 }
@@ -17,19 +17,13 @@ export class AccountService {
 
   constructor(private http: HttpClient, private utils: UtilsService) {}
 
-  login(user: Iuser) {
+  login(user: UserLogin): Observable<any> {
     const req = {
       user: user,
     };
-    this.http
+    return this.http
       .post<any>(`${environment.api}/api/login/`, req)
-      .pipe(take(1))
-      .subscribe((key) => {
-        if (key) {
-          window.localStorage.setItem('authorization-token', key);
-          this.getUserByToken();
-        }
-      });
+      .pipe(take(1));
   }
 
   getToken(): string {

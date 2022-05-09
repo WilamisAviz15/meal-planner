@@ -1,4 +1,7 @@
-import { AccountService, Iuser } from './../../shared/account/account.service';
+import {
+  AccountService,
+  UserLogin,
+} from './../../shared/account/account.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -8,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  user: Iuser = {
+  user: UserLogin = {
     mail: '',
     password: '',
   };
@@ -18,8 +21,13 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     try {
-      this.accountService.login(this.user);
-      this.router.navigate(['']);
+      this.accountService.login(this.user).subscribe((key) => {
+        if (key) {
+          window.localStorage.setItem('authorization-token', key);
+          this.accountService.getUserByToken();
+          setTimeout(() => this.router.navigate(['']), 10);
+        }
+      });
     } catch (error) {
       console.log(error);
     }
