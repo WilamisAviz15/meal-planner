@@ -1,4 +1,4 @@
-import { UtilsService } from 'src/app/shared/services/utils.service';
+import { Message, UtilsService } from 'src/app/shared/services/utils.service';
 import { environment } from './../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -15,7 +15,7 @@ export interface UserLogin {
 export class AccountService {
   users$ = new BehaviorSubject<User[]>([]);
 
-  constructor(private http: HttpClient, private utils: UtilsService) {}
+  constructor(private http: HttpClient, private utilsService: UtilsService) {}
 
   login(user: UserLogin): Observable<any> {
     const req = {
@@ -73,7 +73,10 @@ export class AccountService {
     this.http
       .post(`${environment.api}/api/users/createUser`, req)
       .pipe(take(1))
-      .subscribe();
+      .subscribe((res) => {
+        const response = res as Message;
+        this.utilsService.sendNotificationBySnackBar(response.message);
+      });
   }
 
   editAccount(user: User) {
@@ -84,7 +87,11 @@ export class AccountService {
     this.http
       .post(`${environment.api}/api/users/updateUser`, req)
       .pipe(take(1))
-      .subscribe(() => this.getUsers());
+      .subscribe((res) => {
+        const response = res as Message;
+        this.utilsService.sendNotificationBySnackBar(response.message);
+        this.getUsers();
+      });
   }
 
   deleteUser(user: User) {
@@ -94,6 +101,10 @@ export class AccountService {
     this.http
       .post(`${environment.api}/api/users/deleteUser`, req)
       .pipe(take(1))
-      .subscribe(() => this.getUsers());
+      .subscribe((res) => {
+        const response = res as Message;
+        this.utilsService.sendNotificationBySnackBar(response.message);
+        this.getUsers();
+      });
   }
 }

@@ -9,14 +9,14 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
   const selectedUser = await UserModel.findOne({ mail: req.body.user.mail });
-  if (!selectedUser) return res.status(400).send('Email or Password incorrect');
+  if (!selectedUser) return res.status(401).json('Email or Password incorrect');
 
   const passwordAndUserMatch = bcrypt.compareSync(
     req.body.user.password,
     selectedUser.password
   );
   if (!passwordAndUserMatch)
-    return res.status(400).send('Email or Password incorrect');
+    return res.status(401).json('Email or Password incorrect');
   const token = jwt.sign(
     { mail: selectedUser.mail, admin: selectedUser.isAdmin },
     secret_token!

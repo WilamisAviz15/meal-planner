@@ -27,6 +27,8 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogAdminComponent } from './pages/main/dialog-admin/dialog-admin.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SnackBarComponent } from './shared/snack-bar/snack-bar.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,7 @@ import { DialogAdminComponent } from './pages/main/dialog-admin/dialog-admin.com
     AutenticationComponent,
     ProfileComponent,
     DialogAdminComponent,
+    SnackBarComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,6 +63,7 @@ import { DialogAdminComponent } from './pages/main/dialog-admin/dialog-admin.com
     MatSlideToggleModule,
     MatProgressSpinnerModule,
     BrowserAnimationsModule,
+    MatSnackBarModule,
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }],
 

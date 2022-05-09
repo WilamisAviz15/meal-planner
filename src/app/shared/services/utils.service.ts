@@ -2,6 +2,13 @@ import { schedule } from './../../pages/main/main.component';
 import { Injectable } from '@angular/core';
 import { at } from 'lodash';
 import * as moment from 'moment';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarComponent } from '../snack-bar/snack-bar.component';
+
+export type Message = {
+  message: string;
+  err?: string;
+};
 
 type NonOptionalKeys<T> = {
   [K in keyof T]-?: T extends { [K1 in K]: any } ? K : never;
@@ -11,7 +18,7 @@ type NonOptionalKeys<T> = {
   providedIn: 'root',
 })
 export class UtilsService {
-  constructor() {}
+  constructor(private _snackBar: MatSnackBar) {}
   idTableScheduling: number = 0;
 
   formatDate(date: Date): string {
@@ -53,5 +60,14 @@ export class UtilsService {
   isOfType<T>(obj: any, properties: NonOptionalKeys<T>[]): obj is T {
     const values = at(obj, properties);
     return !values.includes(undefined);
+  }
+
+  sendNotificationBySnackBar(message: string) {
+    this._snackBar.openFromComponent(SnackBarComponent, {
+      data: {
+        message: message,
+      },
+      duration: 2000,
+    });
   }
 }
