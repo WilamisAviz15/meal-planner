@@ -7,7 +7,7 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { UtilsService } from 'src/app/shared/services/utils.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogScheduleComponent } from '../main/dialog-schedule/dialog-schedule.component';
-import { debounceTime, Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 import { ConfirmationDialogComponent } from '../main/dialog-schedule/confirmation-dialog/confirmation-dialog.component';
 import { Schedule } from 'backend/src/app/models/schedule';
 
@@ -47,20 +47,19 @@ export class SchedulesComponent implements OnInit {
   ngOnInit(): void {
     const currentUser = window.localStorage.getItem('mail');
     if (currentUser) {
-      this.accountService.getUser(currentUser).subscribe((u) => {
-        this.user = u[0];
-      });
+      combineLatest([
+        this.accountService.getUser(currentUser),
+        this.dialogScheduleService.getAllSchedules(),
+      ])
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(([u, meal]) => {
+          this.user = u[0];
+          const scheduleFilteredByUser = meal.filter(
+            (s) => s.user == this.user._id
+          );
+          this.meals = new MatTableDataSource(scheduleFilteredByUser);
+        });
     }
-
-    this.dialogScheduleService
-      .getAllSchedules()
-      .pipe(takeUntil(this.destroy$), debounceTime(500))
-      .subscribe((meals) => {
-        const scheduleFilteredByUser = meals.filter(
-          (s) => s.user == this.user._id
-        );
-        this.meals = new MatTableDataSource(scheduleFilteredByUser);
-      });
   }
 
   removeScheduling(index?: number): void {

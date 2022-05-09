@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogScheduleComponent } from './dialog-schedule/dialog-schedule.component';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationDialogComponent } from './dialog-schedule/confirmation-dialog/confirmation-dialog.component';
-import { filter, Subject, take, takeUntil } from 'rxjs';
+import { combineLatest, filter, Subject, take, takeUntil } from 'rxjs';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { AccountService } from 'src/app/shared/account/account.service';
 import { DialogAdminComponent } from './dialog-admin/dialog-admin.component';
@@ -77,9 +77,17 @@ export class MainComponent implements OnInit, OnDestroy {
     const currentUser = window.localStorage.getItem('mail');
     if (currentUser) {
       console.log('current', currentUser);
-      this.accountService.getUser(currentUser).subscribe((u) => {
-        this.user = u[0];
-      });
+      combineLatest([
+        this.accountService.getUser(currentUser),
+        this.dialogScheduleService.getAllSchedules(),
+      ])
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(([u, meal]) => {
+          this.user = u[0];
+          const filteredMeals = meal.filter((m) => m.user == this.user._id);
+          this.meals = new MatTableDataSource(filteredMeals);
+          this.isLoading = false;
+        });
     }
 
     this.dialogScheduleService
