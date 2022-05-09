@@ -42,7 +42,7 @@ router.post('/createUser', async (req, res) => {
       .catch((err: any) => {
         release();
         return res.status(500).json({
-          message: 'Erro ao cadastrar associado!',
+          message: 'Erro ao cadastrar usuário!',
           error: err,
         });
       });

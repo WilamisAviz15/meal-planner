@@ -73,9 +73,13 @@ export class AccountService {
     this.http
       .post(`${environment.api}/api/users/createUser`, req)
       .pipe(take(1))
-      .subscribe((res) => {
-        const response = res as Message;
-        this.utilsService.sendNotificationBySnackBar(response.message);
+      .subscribe({
+        next: (res) => {
+          const response = res as Message;
+          this.utilsService.sendNotificationBySnackBar(response.message);
+        },
+        error: (err) =>
+          this.utilsService.sendNotificationBySnackBar(err.error.message),
       });
   }
 
