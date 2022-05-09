@@ -1,4 +1,9 @@
+import {
+  DialogWalletComponent,
+  WalletTypes,
+} from './dialog-wallet/dialog-wallet.component';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { User } from 'backend/src/app/models/user';
 import { AccountService } from 'src/app/shared/account/account.service';
 import { ProfileService } from './profile.service';
@@ -9,6 +14,7 @@ import { ProfileService } from './profile.service';
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
+  type = WalletTypes;
   currentUserOptions = {
     id: '',
     mail: '',
@@ -21,7 +27,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     public accountService: AccountService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -76,5 +83,13 @@ export class ProfileComponent implements OnInit {
     this.currentUserOptions.name = this.user.name;
     this.currentUserOptions.id = this.user._id;
     this.currentUserOptions.isAdmin = this.user.isAdmin;
+  }
+
+  openDialog(type: WalletTypes): void {
+    this.dialog.open(DialogWalletComponent, {
+      data: {
+        type: type,
+      },
+    });
   }
 }

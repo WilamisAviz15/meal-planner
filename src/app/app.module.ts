@@ -29,6 +29,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogAdminComponent } from './pages/main/dialog-admin/dialog-admin.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SnackBarComponent } from './shared/snack-bar/snack-bar.component';
+import { DialogWalletComponent } from './pages/profile/dialog-wallet/dialog-wallet.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { SnackBarComponent } from './shared/snack-bar/snack-bar.component';
     ProfileComponent,
     DialogAdminComponent,
     SnackBarComponent,
+    DialogWalletComponent,
   ],
   imports: [
     BrowserModule,

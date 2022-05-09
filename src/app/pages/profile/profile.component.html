@@ -75,8 +75,12 @@
         <h2>Saldo</h2>
         <h1>R$ 30,00</h1>
         <div class="actions">
-          <button mat-raised-button>Adicionar saldo</button>
-          <a>Minhas solicitações de reembolso</a>
+          <button mat-raised-button (click)="openDialog(type.ADD_CASH)">
+            Adicionar saldo
+          </button>
+          <a (click)="openDialog(type.ALL_REFUND_REQUESTS)"
+            >Minhas solicitações de reembolso</a
+          >
         </div>
       </mat-card>
     </mat-card-content>

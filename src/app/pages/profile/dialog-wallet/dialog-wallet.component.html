@@ -1,0 +1,21 @@
+<mat-dialog-content
+  class="mat-typography"
+  *ngIf="componentType == type.ADD_CASH"
+>
+  <h2>Insira o valor para inserir dinheiro na carteira</h2>
+  <mat-form-field>
+    <mat-label>Informe o valor</mat-label>
+    <input matInput name="value" />
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" class="btn">Inserir</button>
+  <button mat-stroked-button color="warn" class="btn" mat-dialog-close>
+    Cancelar
+  </button>
+</mat-dialog-content>
+<mat-dialog-content
+  class="mat-typography"
+  *ngIf="componentType == type.ALL_REFUND_REQUESTS"
+>
+  <h1>solicitações de reembolso</h1>
+</mat-dialog-content>
