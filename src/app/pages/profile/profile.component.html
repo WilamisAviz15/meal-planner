@@ -8,24 +8,6 @@
   </button>
 </mat-toolbar>
 <div class="container">
-  <mat-card *ngIf="user.isAdmin">
-    <mat-card-title>Buscar perfil para editar</mat-card-title>
-    <mat-card-content>
-      <mat-form-field>
-        <mat-label>CPF</mat-label>
-        <input matInput [(ngModel)]="cpfToSearch" name="cpf" />
-      </mat-form-field>
-      <button
-        mat-raised-button
-        color="primary"
-        style="margin-left: 15px"
-        (click)="getUserByCPF()"
-        [disabled]="!cpfToSearch.length"
-      >
-        Consultar
-      </button>
-    </mat-card-content>
-  </mat-card>
   <mat-card>
     <mat-card-title class="admin"
       >Editar Perfil

@@ -17,7 +17,6 @@ export class ProfileComponent implements OnInit {
     cpf: '',
     isAdmin: false,
   };
-  cpfToSearch: string = '';
   user: User = new User();
 
   constructor(
@@ -68,19 +67,6 @@ export class ProfileComponent implements OnInit {
 
   verifyToggle(event: any) {
     this.currentUserOptions.isAdmin = event.checked;
-  }
-
-  getUserByCPF() {
-    const userFiltered = this.profileService
-      .getUserByCPF(this.cpfToSearch)
-      .subscribe((user) => {
-        this.currentUserOptions.mail = user.mail;
-        this.currentUserOptions.cpf = user.cpf;
-        this.currentUserOptions.password = user.password;
-        this.currentUserOptions.name = user.name;
-        this.currentUserOptions.id = user._id;
-        this.currentUserOptions.isAdmin = user.isAdmin;
-      });
   }
 
   restoreInfoMyProfile(): void {
