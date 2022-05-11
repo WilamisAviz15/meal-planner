@@ -23,6 +23,7 @@ export class ProfileComponent implements OnInit {
     cpf: '',
     isAdmin: false,
   };
+  WalletBalance = '';
   user: User = new User();
 
   constructor(

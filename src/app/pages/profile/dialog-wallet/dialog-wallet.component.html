@@ -2,13 +2,21 @@
   class="mat-typography"
   *ngIf="componentType == type.ADD_CASH"
 >
-  <h2>Insira o valor para inserir dinheiro na carteira</h2>
+  <h2>Insira o valor a adicionar</h2>
   <mat-form-field>
+    <span matPrefix>R$ &nbsp;</span>
     <mat-label>Informe o valor</mat-label>
-    <input matInput name="value" />
+    <input matInput name="value" [(ngModel)]="selectedValue" />
   </mat-form-field>
 
-  <button mat-raised-button color="primary" class="btn">Inserir</button>
+  <button
+    mat-raised-button
+    color="primary"
+    class="btn"
+    [disabled]="!selectedValue.length"
+  >
+    Inserir
+  </button>
   <button mat-stroked-button color="warn" class="btn" mat-dialog-close>
     Cancelar
   </button>

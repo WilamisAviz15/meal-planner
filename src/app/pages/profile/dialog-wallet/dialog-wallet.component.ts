@@ -14,6 +14,7 @@ export enum WalletTypes {
 export class DialogWalletComponent implements OnInit {
   componentType!: WalletTypes;
   type = WalletTypes;
+  selectedValue = '';
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 
