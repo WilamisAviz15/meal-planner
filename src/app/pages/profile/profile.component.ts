@@ -1,19 +1,22 @@
+import { Wallet } from './../../../../backend/src/app/models/wallet';
 import {
   DialogWalletComponent,
   WalletTypes,
 } from './dialog-wallet/dialog-wallet.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { User } from 'backend/src/app/models/user';
 import { AccountService } from 'src/app/shared/account/account.service';
 import { ProfileService } from './profile.service';
+import { combineLatest, Subject, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   type = WalletTypes;
   currentUserOptions = {
     id: '',
@@ -23,7 +26,7 @@ export class ProfileComponent implements OnInit {
     cpf: '',
     isAdmin: false,
   };
-  WalletBalance = '';
+  WalletBalance = '0,00';
   user: User = new User();
 
   constructor(
@@ -32,13 +35,29 @@ export class ProfileComponent implements OnInit {
     private dialog: MatDialog
   ) {}
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
     const currentUser = window.localStorage.getItem('mail');
     if (currentUser) {
-      this.accountService.getUser(currentUser).subscribe((u) => {
-        this.user = u[0];
-        this.restoreInfoMyProfile();
-      });
+      combineLatest([
+        this.accountService.getUser(currentUser),
+        this.profileService.getAllWallets(),
+      ])
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(([u, wallets]) => {
+          this.user = u[0];
+          this.restoreInfoMyProfile();
+          this.WalletBalance = wallets
+            .filter((w) => w.user == this.user._id)
+            .reduce((acc, wallet) => acc + +wallet.balance, 0)
+            .toFixed(2)
+            .toString()
+            .replace('.', ',');
+        });
     }
   }
 
@@ -87,10 +106,21 @@ export class ProfileComponent implements OnInit {
   }
 
   openDialog(type: WalletTypes): void {
-    this.dialog.open(DialogWalletComponent, {
-      data: {
-        type: type,
-      },
-    });
+    this.dialog
+      .open(DialogWalletComponent, {
+        data: {
+          type: type,
+        },
+      })
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((balance) => {
+        if (balance) {
+          const wallet = new Wallet();
+          wallet.user = this.user._id;
+          wallet.balance = balance.replace(',', '.');
+          this.profileService.addCash(wallet);
+        }
+      });
   }
 }

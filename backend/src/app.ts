@@ -33,7 +33,7 @@ class MealPlannerAPI {
     this.app.use('/api/users', usersRoutes);
     this.app.use('/api/login', loginRoutes);
     this.app.use('/api/schedules', scheduleRoutes);
-    this.app.use('/api/wallet', walletRoutes);
+    this.app.use('/api/wallets', walletRoutes);
   }
 }
 

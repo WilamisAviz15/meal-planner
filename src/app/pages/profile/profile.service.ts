@@ -40,12 +40,26 @@ export class ProfileService {
 
   getAllWallets(): BehaviorSubject<Wallet[]> {
     this.http
-      .get(`${environment.api}/api/wallet/all`)
+      .get(`${environment.api}/api/wallets/all`)
       .pipe(take(1))
       .subscribe((wallets) => {
         this.wallet$.next(wallets as Wallet[]);
       });
     console.log(this.wallet$.getValue());
     return this.wallet$;
+  }
+
+  addCash(wallet: Wallet): void {
+    const req = {
+      wallet: wallet,
+    };
+    this.http
+      .post(`${environment.api}/api/wallets/`, req)
+      .pipe(take(1))
+      .subscribe((res) => {
+        this.getAllWallets();
+        const response = res as Message;
+        this.utilsService.sendNotificationBySnackBar(response.message);
+      });
   }
 }

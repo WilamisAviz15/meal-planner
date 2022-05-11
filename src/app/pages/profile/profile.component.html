@@ -73,7 +73,7 @@
     <mat-card-content>
       <mat-card class="wallet">
         <h2>Saldo</h2>
-        <h1>R$ 0,00</h1>
+        <h1>R$ {{ WalletBalance }}</h1>
         <div class="actions">
           <button mat-raised-button (click)="openDialog(type.ADD_CASH)">
             Adicionar saldo

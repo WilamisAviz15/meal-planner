@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export enum WalletTypes {
   ADD_CASH,
@@ -16,9 +16,16 @@ export class DialogWalletComponent implements OnInit {
   type = WalletTypes;
   selectedValue = '';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private dialogRef: MatDialogRef<DialogWalletComponent>
+  ) {}
 
   ngOnInit(): void {
     this.componentType = this.data.type;
+  }
+
+  addCash() {
+    this.dialogRef.close(this.selectedValue);
   }
 }

@@ -14,9 +14,9 @@ router.get('/all', async (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const sumValue = new WalletModel(req.body.wallet);
+  const wallet = new WalletModel(req.body.wallet);
   mutex.acquire().then((release) => {
-    sumValue
+    wallet
       .save()
       .then(() => {
         release();
