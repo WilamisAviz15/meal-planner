@@ -144,7 +144,11 @@
         >
           <mat-icon>delete</mat-icon>
         </button>
-        <button mat-button disabled="{{ element.isDone }}">
+        <button
+          mat-button
+          disabled="{{ element.isDone }}"
+          (click)="payment(this.meals.data.indexOf(element))"
+        >
           <mat-icon>attach_money</mat-icon>
         </button>
       </td>

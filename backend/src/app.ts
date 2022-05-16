@@ -4,6 +4,7 @@ import usersRoutes from './app/routes/user';
 import scheduleRoutes from './app/routes/schedule';
 import loginRoutes from './app/routes/login';
 import walletRoutes from './app/routes/wallet';
+import refundRoutes from './app/routes/refund';
 import auth from './app/routes/auth';
 import { mongoose } from '@typegoose/typegoose';
 
@@ -34,6 +35,7 @@ class MealPlannerAPI {
     this.app.use('/api/login', loginRoutes);
     this.app.use('/api/schedules', scheduleRoutes);
     this.app.use('/api/wallets', walletRoutes);
+    this.app.use('/api/refunds', refundRoutes);
   }
 }
 

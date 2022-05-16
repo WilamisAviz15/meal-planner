@@ -10,6 +10,9 @@ import { combineLatest, filter, Subject, take, takeUntil } from 'rxjs';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { AccountService } from 'src/app/shared/account/account.service';
 import { DialogAdminComponent } from './dialog-admin/dialog-admin.component';
+import { Wallet } from 'backend/src/app/models/wallet';
+import { ProfileService } from '../profile/profile.service';
+import { Refund } from 'backend/src/app/models/refund';
 
 export interface schedule {
   id: number;
@@ -40,6 +43,7 @@ export class MainComponent implements OnInit, OnDestroy {
   meals = new MatTableDataSource<Schedule>();
   private destroy$ = new Subject<void>();
   isLoading = true;
+  currentBalance = '0,00';
   title = CONFIRMATION_DIALOG_TYPE;
   componentType = ADMIN_DIALOG_TYPE;
   displayedColumns: string[] = [
@@ -63,7 +67,8 @@ export class MainComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     public utilsService: UtilsService,
     public accountService: AccountService,
-    public dialogScheduleService: DialogScheduleService
+    public dialogScheduleService: DialogScheduleService,
+    private profileService: ProfileService
   ) {}
 
   ngOnDestroy(): void {
@@ -80,13 +85,19 @@ export class MainComponent implements OnInit, OnDestroy {
       combineLatest([
         this.accountService.getUser(currentUser),
         this.dialogScheduleService.getAllSchedules(),
+        this.profileService.getAllWallets(),
       ])
         .pipe(takeUntil(this.destroy$))
-        .subscribe(([u, meal]) => {
+        .subscribe(([u, meal, wallets]) => {
           this.user = u[0];
           const filteredMeals = meal.filter((m) => m.user == this.user._id);
           this.meals = new MatTableDataSource(filteredMeals);
           this.isLoading = false;
+          this.currentBalance = wallets
+            .filter((w) => w.user == this.user._id)
+            .reduce((acc, wallet) => acc + +wallet.balance, 0)
+            .toFixed(2)
+            .toString();
         });
     }
 
@@ -218,6 +229,51 @@ export class MainComponent implements OnInit, OnDestroy {
       .subscribe((response) => {
         if (response) this.removeScheduling(idx);
         console.log(idx);
+      });
+  }
+
+  payment(idx: number) {
+    const title = this.meals.data[idx].isPaid
+      ? 'Refeição já foi paga, deseja solicitar o reembolso?'
+      : 'Deseja realizar o pagamento da refeição?';
+    this.dialog
+      .open(ConfirmationDialogComponent, {
+        data: { title: title, id: idx },
+      })
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((response) => {
+        if (response) {
+          if (!this.meals.data[idx].isPaid) {
+            if (this.currentBalance === '0.00') {
+              this.utilsService.sendNotificationBySnackBar(
+                'Saldo insuficiente.'
+              );
+              return;
+            }
+            const mealValue =
+              this.meals.data[idx].mealType === 'Almoço' ? '-3.00' : '-1.00';
+            if (+this.currentBalance + +mealValue >= 0) {
+              const wallet = new Wallet();
+              wallet.user = this.user._id;
+              wallet.balance = mealValue;
+              this.profileService.addCash(wallet);
+              this.meals.data[idx].isPaid = true;
+              this.dialogScheduleService.updateSchedule(this.meals.data[idx]);
+            } else {
+              this.utilsService.sendNotificationBySnackBar(
+                'Saldo insuficiente.'
+              );
+            }
+          } else {
+            const refund = new Refund();
+            refund.mealType = this.meals.data[idx].mealType;
+            refund.value =
+              this.meals.data[idx].mealType === 'Almoço' ? '3.00' : '1.00';
+            // this.user.refunds.push(cloneDeep(refund));
+            // this.accountService.editAccount(this.user);
+          }
+        }
       });
   }
 }

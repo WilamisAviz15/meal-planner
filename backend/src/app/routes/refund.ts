@@ -1,5 +1,4 @@
-import WalletModel from '../models/wallet';
-import { Wallet } from '../models/wallet';
+import RefundModel, { Refund } from '../models/refund';
 import 'dotenv/config';
 import * as express from 'express';
 import { Mutex } from 'async-mutex';
@@ -9,23 +8,25 @@ const router = express.Router();
 const mutex = new Mutex();
 
 router.get('/all', async (req, res) => {
-  const wallets: Wallet[] = await WalletModel.find({});
-  return res.status(200).json(Array.from(Object.values(wallets)));
+  const refunds: Refund[] = await RefundModel.find({});
+  return res.status(200).json(Array.from(Object.values(refunds)));
 });
 
 router.post('/', (req, res) => {
-  const wallet = new WalletModel(req.body.wallet);
+  const refund = new RefundModel(req.body.refund);
   mutex.acquire().then((release) => {
-    wallet
+    refund
       .save()
       .then(() => {
         release();
-        return res.status(201).json({ message: 'Carteira atualizada!' });
+        return res
+          .status(201)
+          .json({ message: 'Solicitação de reembolso realizada!' });
       })
       .catch((err: any) => {
         release();
         return res.status(500).json({
-          message: 'Erro ao adicionar dinheiro na carteira!',
+          message: 'Erro ao fazer a solicitação de reembolso!',
           error: err,
         });
       });
